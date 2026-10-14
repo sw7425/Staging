@@ -1,0 +1,43 @@
+{
+  "decision": "NO-GO for public release; local acceptance expanded; not deployed or signed",
+  "runtime": {
+    "python": "3.11.15",
+    "django": "5.2.17",
+    "database": "isolated PostgreSQL 15",
+    "dependencies": "requirements.lock.txt"
+  },
+  "current_results": {
+    "backend_tests": 92,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "migration_drift": "none"
+  },
+  "new_tests": {
+    "api_lifecycles": 27,
+    "report_escalation_concurrency": 1
+  },
+  "fixes": [
+    "PostgreSQL nullable-join row-lock failure during report review",
+    "globally unique push-token ownership upsert and old-owner isolation",
+    "typed report review notes",
+    "locked, rechecked manual escalation and protection from re-review after escalation",
+    "audit-author reviewer-note field protection"
+  ],
+  "limitations": [
+    "Synthetic local data only, not production records",
+    "Django API test client; force_authenticate used for most role actions; not all GUI interactions",
+    "One true signup/approval/JWT refresh/logout lifecycle and local mailbox reset tested; external delivery not tested",
+    "Coverage spans multiple workflows but does not certify every role, action, branch or legacy web screen",
+    "Current Android source unchanged; no new native build/device run this turn; earlier evidence remains separately labelled",
+    "No external services, production backup or signed app accessed"
+  ],
+  "required_inputs": [
+    "Existing isolated staging URL and source repository/deployment location",
+    "Privately configured staging Neon, Cloudinary, email, Telegram and Firebase providers",
+    "Owner-executed or securely accessible real backup restore evidence",
+    "Existing signing key kept in private local/CI storage, current distributed version code and certificate fingerprint",
+    "Real Android devices and designated acceptance testers",
+    "Approved contacts, privacy/retention policy and rollback/monitoring owners"
+  ]
+}

@@ -1,0 +1,42 @@
+# Staging-only reference. Existing dashboard service settings must be checked separately.
+services:
+  - type: web
+    name: kpn-staging
+    runtime: python
+    branch: main
+    buildCommand: bash scripts/render-staging-build.sh
+    startCommand: bash scripts/render-start.sh
+    healthCheckPath: /health/ready/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.15
+      - key: KPN_ENV
+        value: production
+      - key: DEBUG
+        value: 'False'
+      - key: SITE_URL
+        value: https://kpn-staging.onrender.com
+      - key: SESSION_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: LOCKALLY_API_KEY
+        sync: false
+      - key: LOCKALLY_API_URL
+        sync: false
+      - key: LOCKALLY_FROM_EMAIL
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_WEBHOOK_SECRET
+        sync: false
+      - key: TELEGRAM_CHANNEL_ID
+        sync: false
+      - key: TELEGRAM_BOT_USERNAME
+        sync: false

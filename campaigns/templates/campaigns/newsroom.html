@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load campaign_extras %}
+
+{% block title %}KPN Newsroom - Kebbi Progressive Youth Network{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+
+    <!-- Header -->
+    <section class="bg-kpn-green text-white py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-3">KPN Newsroom</h1>
+            <p class="text-lg max-w-3xl mx-auto opacity-90">
+                Verified civic reporting, community alerts, and development news across all 21 LGAs of Kebbi State.
+            </p>
+        </div>
+    </section>
+
+    <!-- Filters & Search -->
+    <section class="py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <form method="GET" action="{% url 'campaigns:newsroom' %}" class="flex flex-wrap gap-3 items-center justify-between">
+
+                <div class="flex flex-wrap gap-3 flex-grow">
+                    <!-- Search -->
+                    <div class="relative min-w-[240px] flex-grow md:flex-grow-0">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                            <i class="fas fa-search text-xs"></i>
+                        </span>
+                        <input type="text" name="q" value="{{ search_query }}" placeholder="Search articles, locations…"
+                               class="kpn-input pl-8">
+                    </div>
+
+                    <!-- Category Filter -->
+                    <select name="category" class="kpn-input kpn-select w-auto min-w-[150px]">
+                        <option value="">All Categories</option>
+                        {% for value, label in categories %}
+                            <option value="{{ value }}" {% if active_category == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <!-- LGA Filter -->
+                    <select name="lga" class="kpn-input kpn-select w-auto min-w-[150px]">
+                        <option value="">All LGAs</option>
+                        {% for l in lgas %}
+                            <option value="{{ l.id }}" {% if active_lga == l.id|stringformat:"s" %}selected{% endif %}>{{ l.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit" class="kpn-btn kpn-btn-primary">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    {% if search_query or active_category or active_lga or active_verification %}
+                        <a href="{% url 'campaigns:newsroom' %}" class="kpn-btn kpn-btn-secondary">
+                            <i class="fas fa-times"></i> Clear
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            {% if not featured and not rest %}
+                <!-- Empty State -->
+                <div class="kpn-empty text-center py-20 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-search text-2xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">No articles found</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-5">Try adjusting your filters or search query.</p>
+                    <a href="{% url 'campaigns:newsroom' %}" class="kpn-btn kpn-btn-primary">
+                        <i class="fas fa-refresh"></i> Clear all filters
+                    </a>
+                </div>
+            {% else %}
+
+                <!-- Featured Article -->
+                {% if featured %}
+                <div class="mb-10">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col md:flex-row hover:shadow-md transition group">
+                        <div class="md:w-1/2 relative h-64 md:h-auto overflow-hidden bg-gray-200 dark:bg-gray-700">
+                            {% if featured.featured_image %}
+                                <img src="{{ featured.featured_image.url }}" alt="{{ featured.title }}" class="w-full h-full object-cover group- transition duration-500">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-400">
+                                    <i class="fas fa-newspaper text-6xl"></i>
+                                </div>
+                            {% endif %}
+                            <div class="absolute top-4 left-4">
+                                <span class="{{ featured.get_category_colour }} text-white text-xs font-semibold px-2.5 py-1 uppercase tracking-wider rounded-md shadow-sm">
+                                    {{ featured.get_category_display }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="md:w-1/2 p-7 flex flex-col justify-center">
+                            <div class="mb-3">
+                                {{ featured|verification_badge }}
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-kpn-green transition line-clamp-2">
+                                <a href="{% url 'campaigns:article_detail' featured.slug %}">{{ featured.title }}</a>
+                            </h2>
+                            {% if featured.subheadline %}
+                                <p class="text-base text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">{{ featured.subheadline }}</p>
+                            {% endif %}
+
+                            <div class="mt-auto flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-4">
+                                <span><i class="fas fa-calendar-alt mr-1"></i> {{ featured.published_at|date:"M d, Y" }}</span>
+                                {% if featured.lga %}
+                                    <span><i class="fas fa-map-marker-alt mr-1"></i> {{ featured.lga.name }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Article Grid -->
+                {% if rest %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for article in rest %}
+                    <article class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col hover:shadow-md transition group">
+                        <a href="{% url 'campaigns:article_detail' article.slug %}" class="block relative h-48 overflow-hidden bg-gray-100 dark:bg-gray-700">
+                            {% if article.featured_image %}
+                                <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="w-full h-full object-cover group- transition duration-500">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                    <i class="fas fa-image text-4xl"></i>
+                                </div>
+                            {% endif %}
+                            <div class="absolute top-3 left-3">
+                                <span class="{{ article.get_category_colour }} text-white text-[10px] font-semibold px-2 py-0.5 uppercase tracking-wider rounded-md shadow-sm">
+                                    {{ article.get_category_display }}
+                                </span>
+                            </div>
+                        </a>
+
+                        <div class="p-5 flex flex-col flex-grow">
+                            <div class="mb-2">
+                                {{ article|verification_badge }}
+                            </div>
+
+                            <h3 class="text-base font-bold text-gray-900 dark:text-white mb-2 leading-snug group-hover:text-kpn-green transition line-clamp-3">
+                                <a href="{% url 'campaigns:article_detail' article.slug %}">{{ article.title }}</a>
+                            </h3>
+
+                            {% if article.subheadline %}
+                                <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-3">{{ article.subheadline }}</p>
+                            {% endif %}
+
+                            <div class="mt-auto pt-3 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700">
+                                <span><i class="far fa-clock mr-1"></i> {{ article.published_at|date:"M d" }} &bull; {{ article.get_read_time }} min read</span>
+                                {% if article.location or article.lga %}
+                                    <span class="truncate max-w-[120px]" title="{{ article.location|default:article.lga.name }}">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> {{ article.location|default:article.lga.name }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            {% endif %}
+        </div>
+    </section>
+
+</div>
+{% endblock %}

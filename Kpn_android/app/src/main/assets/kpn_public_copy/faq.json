@@ -1,0 +1,245 @@
+{
+  "version": 1,
+  "source": "core/templates/core/faq.html",
+  "source_sha256": "16e7e8575f43dfd3285f1e227f6b3481511e88861d45151dc53503fae63dae85",
+  "blocks": [
+    {
+      "kind": "heading",
+      "html": "<h1>Frequently Asked Questions</h1>",
+      "text": "Frequently Asked Questions"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Find answers to common questions about the Kebbi Progressive Youth Network (KPN)</p>",
+      "text": "Find answers to common questions about the Kebbi Progressive Youth Network (KPN)"
+    },
+    {
+      "kind": "heading",
+      "html": "<h4>Still Have Questions?</h4>",
+      "text": "Still Have Questions?"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Can't find what you're looking for? Reach out to us or view our full Constitution.</p>",
+      "text": "Can't find what you're looking for? Reach out to us or view our full Constitution."
+    },
+    {
+      "kind": "link",
+      "html": "<a href=\"https://www.kpn.com.ng/contact/\">\n Contact Us\n                        </a>",
+      "text": "Contact Us"
+    },
+    {
+      "kind": "link",
+      "html": "<a href=\"https://www.facebook.com/kpnkebbi\">\n Facebook Page\n                        </a>",
+      "text": "Facebook Page"
+    }
+  ],
+  "categories": [
+    "All",
+    "About KPN",
+    "Membership",
+    "Leadership",
+    "Reporting"
+  ],
+  "questions": [
+    {
+      "category": "about",
+      "question": "What is the Kebbi Progressive Youth Network (KPN)?",
+      "answer": [
+        {
+          "kind": "body",
+          "html": "<p>The Kebbi Progressive Youth Network (KPN) is a civic, media, advocacy, youth development, and community engagement organization. Our vision is to build a digitally empowered generation of young people leading positive change for a better, united, and progressive Kebbi State.</p>",
+          "text": "The Kebbi Progressive Youth Network (KPN) is a civic, media, advocacy, youth development, and community engagement organization. Our vision is to build a digitally empowered generation of young people leading positive change for a better, united, and progressive Kebbi State."
+        },
+        {
+          "kind": "body",
+          "html": "<p><strong>Our motto is:</strong>\"One Voice, One Change.\"</p>",
+          "text": "Our motto is: \"One Voice, One Change.\""
+        }
+      ]
+    },
+    {
+      "category": "about",
+      "question": "Is KPN a political organization?",
+      "answer": [
+        {
+          "kind": "body",
+          "html": "<p>No. KPN is a civic, non-partisan organization. While we advocate for good governance, transparency, and accountability across the state, members must not use KPN platforms or resources to promote unauthorized partisan activities or present political statements as official KPN positions.</p>",
+          "text": "No. KPN is a civic, non-partisan organization. While we advocate for good governance, transparency, and accountability across the state, members must not use KPN platforms or resources to promote unauthorized partisan activities or present political statements as official KPN positions."
+        }
+      ]
+    },
+    {
+      "category": "about",
+      "question": "How does KPN fund its activities?",
+      "answer": [
+        {
+          "kind": "body",
+          "html": "<p>KPN raises funds through voluntary donations from members, civic-minded citizens, crowdfunding campaigns, support from NGOs and development partners, and other lawful grants. Financial transparency is heavily prioritized, and all funds are strictly managed by our finance directors.</p>",
+          "text": "KPN raises funds through voluntary donations from members, civic-minded citizens, crowdfunding campaigns, support from NGOs and development partners, and other lawful grants. Financial transparency is heavily prioritized, and all funds are strictly managed by our finance directors."
+        }
+      ]
+    },
+    {
+      "category": "membership",
+      "question": "Who can join KPN?",
+      "answer": [
+        {
+          "kind": "body",
+          "html": "<p>Membership is open to youths and eligible persons who:</p>",
+          "text": "Membership is open to youths and eligible persons who:"
+        },
+        {
+          "kind": "body",
+          "html": "• <li>Support the vision, mission, aims, and values of KPN.</li>",
+          "text": "Support the vision, mission, aims, and values of KPN."
+        },
+        {
+          "kind": "body",
+          "html": "• <li>Are residents or indigenes of Kebbi State, or have a legitimate connection to its development.</li>",
+          "text": "Are residents or indigenes of Kebbi State, or have a legitimate connection to its development."
+        },
+        {
+          "kind": "body",
+          "html": "• <li>Are willing to participate in KPN activities, advocacy, and community programs.</li>",
+          "text": "Are willing to participate in KPN activities, advocacy, and community programs."
+        },
+        {
+          "kind": "body",
+          "html": "• <li>Are committed to promoting peace and responsible communication without hate speech or violence.</li>",
+          "text": "Are committed to promoting peace and responsible communication without hate speech or violence."
+        }
+      ]
+    },
+    {
+      "category": "membership",
+      "question": "What are the responsibilities of a member?",
+      "answer": [
+        {
+          "kind": "body",
+          "html": "<p>Members are expected to:</p>",
+          "text": "Members are expected to:"
+        },
+        {
+          "kind": "body",
+          "html": "• <li>Support and promote official KPN programs and verified information.</li>",
+          "text": "Support and promote official KPN programs and verified information."
+        },
+        {
+          "kind": "body",
+          "html": "• <li>Participate in digital campaigns, community activities, and advocacy.</li>",
+          "text": "Participate in digital campaigns, community activities, and advocacy."
+        },
+        {
+          "kind": "body",
+          "html": "• <li>Report genuine community issues and opportunities through approved channels.</li>",
+          "text": "Report genuine community issues and opportunities through approved channels."
+        },
+        {
+          "kind": "body",
+          "html": "• <li>Avoid spreading false, hateful, or harmful information.</li>",
+          "text": "Avoid spreading false, hateful, or harmful information."
+        },
+        {
+          "kind": "body",
+          "html": "• <li>Protect the reputation, integrity, and credibility of the network.</li>",
+          "text": "Protect the reputation, integrity, and credibility of the network."
+        }
+      ]
+    },
+    {
+      "category": "membership",
+      "question": "Can I lose my membership?",
+      "answer": [
+        {
+          "kind": "body",
+          "html": "<p>Yes. Membership can be revoked due to persistent inactivity, serious violations of the Code of Conduct (including hate speech, harassment, or fraud), deliberate spreading of false information, or the misuse of KPN platforms for personal financial gain.</p>",
+          "text": "Yes. Membership can be revoked due to persistent inactivity, serious violations of the Code of Conduct (including hate speech, harassment, or fraud), deliberate spreading of false information, or the misuse of KPN platforms for personal financial gain."
+        }
+      ]
+    },
+    {
+      "category": "leadership",
+      "question": "How is KPN structured?",
+      "answer": [
+        {
+          "kind": "body",
+          "html": "<p>The organization operates through four main levels to ensure grassroots connection and state-wide coordination:</p>",
+          "text": "The organization operates through four main levels to ensure grassroots connection and state-wide coordination:"
+        },
+        {
+          "kind": "body",
+          "html": "1. <li><strong>Ward Community Teams</strong> (8 leaders per ward)</li>",
+          "text": "Ward Community Teams (8 leaders per ward)"
+        },
+        {
+          "kind": "body",
+          "html": "2. <li><strong>Local Government Network Teams</strong> (10 leaders per LGA)</li>",
+          "text": "Local Government Network Teams (10 leaders per LGA)"
+        },
+        {
+          "kind": "body",
+          "html": "3. <li><strong>Senatorial Leadership Teams</strong> (Kebbi North, Central, and South)</li>",
+          "text": "Senatorial Leadership Teams (Kebbi North, Central, and South)"
+        },
+        {
+          "kind": "body",
+          "html": "4. <li><strong>State Executive Team</strong> (20 state leaders)</li>",
+          "text": "State Executive Team (20 state leaders)"
+        }
+      ]
+    },
+    {
+      "category": "reporting",
+      "question": "How does KPN gather community reports?",
+      "answer": [
+        {
+          "kind": "body",
+          "html": "<p>Ward and LGA teams observe and identify community needs, abandoned projects, positive developments, and opportunities. Reports are collected with evidence (summaries, photos, videos) and submitted upward.</p>",
+          "text": "Ward and LGA teams observe and identify community needs, abandoned projects, positive developments, and opportunities. Reports are collected with evidence (summaries, photos, videos) and submitted upward."
+        },
+        {
+          "kind": "body",
+          "html": "<p>Reports undergo verification at the LGA level, are escalated by Senatorial teams, and undergo a final editorial review and fact-checking by the State Media &amp; Communications Team before publication.</p>",
+          "text": "Reports undergo verification at the LGA level, are escalated by Senatorial teams, and undergo a final editorial review and fact-checking by the State Media & Communications Team before publication."
+        }
+      ]
+    },
+    {
+      "category": "reporting",
+      "question": "How is information classified before publication?",
+      "answer": [
+        {
+          "kind": "body",
+          "html": "<p>To ensure public trust, KPN classifies information based on its verification level:</p>",
+          "text": "To ensure public trust, KPN classifies information based on its verification level:"
+        },
+        {
+          "kind": "body",
+          "html": "• <li><strong>KPN VERIFIED:</strong> Checked and supported by reliable evidence.</li>",
+          "text": "KPN VERIFIED: Checked and supported by reliable evidence."
+        },
+        {
+          "kind": "body",
+          "html": "• <li><strong>KPN CONFIRMED:</strong> Confirmed by multiple reliable sources.</li>",
+          "text": "KPN CONFIRMED: Confirmed by multiple reliable sources."
+        },
+        {
+          "kind": "body",
+          "html": "• <li><strong>KPN DEVELOPING:</strong> Still being checked, updates pending.</li>",
+          "text": "KPN DEVELOPING: Still being checked, updates pending."
+        },
+        {
+          "kind": "body",
+          "html": "• <li><strong>KPN COMMUNITY ALERT:</strong> Urgent matters affecting public safety or welfare.</li>",
+          "text": "KPN COMMUNITY ALERT: Urgent matters affecting public safety or welfare."
+        },
+        {
+          "kind": "body",
+          "html": "• <li><strong>KPN OPPORTUNITY:</strong> Legitimate jobs, scholarships, or training programs.</li>",
+          "text": "KPN OPPORTUNITY: Legitimate jobs, scholarships, or training programs."
+        }
+      ]
+    }
+  ]
+}

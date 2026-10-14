@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Legal & Ethics Adviser Dashboard - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+    {% include 'staff/dashboards/includes/_role_header.html' with title="Legal & Ethics Adviser Dashboard" icon_class="fas fa-balance-scale" welcome_messages="Upholding KPN's legal and ethical standards.|Providing constitutional guidance to the executive.|Integrity is the foundation of progress." %}
+    {% include 'staff/dashboards/includes/_profile_section.html' %}
+
+    <!-- My Statistics -->
+    <div class="mb-8">
+        <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-chart-pie mr-2 text-kpn-blue"></i> My Statistics
+</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-blue-100 dark:bg-blue-900/30 text-kpn-blue">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{cases_reviewed|default:0}}</p>
+        <p class="kpn-stat-label">Cases Reviewed</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{open_cases|default:0}}</p>
+        <p class="kpn-stat-label">Open Cases</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-green-100 dark:bg-green-900/30 text-kpn-green">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{guidelines_issued|default:0}}</p>
+        <p class="kpn-stat-label">Guidelines Issued</p>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- My Tasks -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-tasks mr-2 text-orange-500"></i> My Tasks
+</h2>
+            <div class="flex flex-col gap-1">
+                <a href="{% url 'staff:disciplinary_actions' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-500">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <div>
+                        <span>Disciplinary Actions</span>
+                        <span class="text-xs text-gray-500">Review escalated disciplinary matters</span>
+                    </div>
+                </a>
+                <a href="{% url 'staff:view_reports' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-500">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div>
+                        <span>Reports</span>
+                        <span class="text-xs text-gray-500">Access legal and compliance records</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- My Responsibilities -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-clipboard-list mr-2 text-purple-500"></i> My Responsibilities
+</h2>
+            <ul class="space-y-4">
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">1</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Legal Advice:</strong> Provide authoritative constitutional and legal guidance to the state executive on all matters.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">2</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Disciplinary Oversight:</strong> Advise on disciplinary proceedings and ensure all actions comply with KPN's constitution.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">3</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Policy Review:</strong> Review and recommend updates to KPN policies, guidelines, and ethical standards.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">4</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Dispute Resolution:</strong> Mediate and arbitrate disputes between members, officials, or organisational units.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Quick Profile Link -->
+    <div class="text-right">
+        <a href="{% url 'staff:profile' %}" class="inline-flex items-center text-sm text-gray-500 hover:text-kpn-green font-semibold transition">
+            <i class="fas fa-user-edit mr-2"></i> Edit My Profile
+        </a>
+    </div>
+</div>
+{% endblock %}

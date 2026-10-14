@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "source": "core/templates/core/support_us.html",
+  "source_sha256": "668510a78474b3a891e295756e40c7ea2a9b0dec2352ba855026da70ccc3936f",
+  "blocks": [
+    {
+      "kind": "heading",
+      "html": "<h1>Support Our Mission</h1>",
+      "text": "Support Our Mission"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Help us empower youth and promote civic engagement across Kebbi State</p>",
+      "text": "Help us empower youth and promote civic engagement across Kebbi State"
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>Your Impact Matters</h2>",
+      "text": "Your Impact Matters"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                    Your generous support enables us to continue our vital work across all 21 LGAs and 225 wards in Kebbi State.\n                </p>",
+      "text": "Your generous support enables us to continue our vital work across all 21 LGAs and 225 wards in Kebbi State."
+    },
+    {
+      "kind": "body",
+      "html": "<p>Grassroots Media</p>",
+      "text": "Grassroots Media"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Civic Accountability</p>",
+      "text": "Civic Accountability"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Community Welfare</p>",
+      "text": "Community Welfare"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Youth Opportunities</p>",
+      "text": "Youth Opportunities"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Policy Advocacy</p>",
+      "text": "Policy Advocacy"
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>\n\n            Donation Account Details\n        </h2>",
+      "text": "Donation Account Details"
+    },
+    {
+      "kind": "heading",
+      "html": "<h3>Important Information</h3>",
+      "text": "Important Information"
+    },
+    {
+      "kind": "body",
+      "html": "• <li>\n\n<span>All donations are verified and recorded by our Finance Team</span>\n</li>",
+      "text": "All donations are verified and recorded by our Finance Team"
+    },
+    {
+      "kind": "body",
+      "html": "• <li>\n\n<span>Funds are used exclusively for KPN activities, programs, and welfare initiatives</span>\n</li>",
+      "text": "Funds are used exclusively for KPN activities, programs, and welfare initiatives"
+    },
+    {
+      "kind": "body",
+      "html": "• <li>\n\n<span>Regular financial reports are published for transparency</span>\n</li>",
+      "text": "Regular financial reports are published for transparency"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Have questions about donations or need assistance?</p>",
+      "text": "Have questions about donations or need assistance?"
+    },
+    {
+      "kind": "link",
+      "html": "<a href=\"https://www.kpn.com.ng/contact/\">\n\n            Contact Us\n        </a>",
+      "text": "Contact Us"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+<header class="kpn-workspace-header">
+    <div>
+        <p class="kpn-eyebrow">Your KPN workspace</p>
+        <h1><i class="{{ icon_class|default:'fas fa-tachometer-alt' }}" aria-hidden="true"></i> {{ title }}</h1>
+        <p class="kpn-workspace-meta">{{ user.role_definition.title|default:"KPN member" }} · {{ user.get_jurisdiction }}</p>
+    </div>
+    <div class="kpn-workspace-identity"><span>Signed in as</span><strong>{{ user.get_full_name }}</strong></div>
+</header>

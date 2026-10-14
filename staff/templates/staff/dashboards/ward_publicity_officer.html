@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Ward Publicity Officer Dashboard - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+    {% include 'staff/dashboards/includes/_role_header.html' with title="Ward Publicity Officer Dashboard" icon_class="fas fa-bullhorn" welcome_messages="Spreading the KPN message in your ward.|Promoting activities at the community level.|Every voice matters." %}
+    {% include 'staff/dashboards/includes/_profile_section.html' %}
+
+    <!-- My Statistics -->
+    <div class="mb-8">
+        <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-chart-pie mr-2 text-kpn-blue"></i> My Statistics
+</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-blue-100 dark:bg-blue-900/30 text-kpn-blue">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{user.ward.name|default:'N/A'}}</p>
+        <p class="kpn-stat-label">Ward</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-green-100 dark:bg-green-900/30 text-kpn-green">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{members_in_ward|default:0}}</p>
+        <p class="kpn-stat-label">Members in Ward</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-orange-100 dark:bg-orange-900/30 text-orange-600">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{announcements|default:0}}</p>
+        <p class="kpn-stat-label">Announcements Made</p>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- My Tasks -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-tasks mr-2 text-orange-500"></i> My Tasks
+</h2>
+            <div class="flex flex-col gap-1">
+                <a href="{% url 'campaigns:newsroom' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-500">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div>
+                        <span>Newsroom</span>
+                        <span class="text-xs text-gray-500">View and share KPN news in your ward</span>
+                    </div>
+                </a>
+                <a href="{% url 'staff:manage_staff' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-500">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <span>Ward Members</span>
+                        <span class="text-xs text-gray-500">View members in your ward</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- My Responsibilities -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-clipboard-list mr-2 text-purple-500"></i> My Responsibilities
+</h2>
+            <ul class="space-y-4">
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">1</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Ward Communications:</strong> Publicize all KPN activities, events, and announcements within the ward.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">2</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Community Awareness:</strong> Engage community members and raise awareness about KPN's mission and programs.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">3</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Social Media:</strong> Manage ward-level social media groups and messaging platforms for KPN updates.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">4</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Reporting to LGA PR:</strong> Report ward publicity activities to the LGA Publicity Officer monthly.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Quick Profile Link -->
+    <div class="text-right">
+        <a href="{% url 'staff:profile' %}" class="inline-flex items-center text-sm text-gray-500 hover:text-kpn-green font-semibold transition">
+            <i class="fas fa-user-edit mr-2"></i> Edit My Profile
+        </a>
+    </div>
+</div>
+{% endblock %}

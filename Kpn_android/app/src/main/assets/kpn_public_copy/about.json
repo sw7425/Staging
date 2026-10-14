@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "source": "core/templates/core/about.html",
+  "source_sha256": "9eb42e1c07887950ede98102c10830f13eb876ea9f1bb0f20ff90231be803fb5",
+  "blocks": [
+    {
+      "kind": "heading",
+      "html": "<h1>About Kebbi Progressive Youth Network</h1>",
+      "text": "About Kebbi Progressive Youth Network"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n            A modern civic network, community media, advocacy, development, and opportunities platform for the people of Kebbi State.\n        </p>",
+      "text": "A modern civic network, community media, advocacy, development, and opportunities platform for the people of Kebbi State."
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>Our Motto</h2>",
+      "text": "Our Motto"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\"One Voice, One Change.\"</p>",
+      "text": "\"One Voice, One Change.\""
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                    The <strong>Kebbi Progressive Youth Network (KPN)</strong> is a youth-driven, state-wide organization dedicated to building unity, transparency, and sustainable development across all 21 Local Government Areas of Kebbi State.\n                </p>",
+      "text": "The Kebbi Progressive Youth Network (KPN) is a youth-driven, state-wide organization dedicated to building unity, transparency, and sustainable development across all 21 Local Government Areas of Kebbi State."
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                    We believe in collective action, civic awareness, and grassroots empowerment as the ultimate tools to move our communities forward and ensure the voices of our people count in governance and decision-making.\n                    Through our extensive network of leaders down to the Ward level, we bridge the gap between the government and the governed.\n                </p>",
+      "text": "We believe in collective action, civic awareness, and grassroots empowerment as the ultimate tools to move our communities forward and ensure the voices of our people count in governance and decision-making. Through our extensive network of leaders down to the Ward level, we bridge the gap between the government and the governed."
+    },
+    {
+      "kind": "heading",
+      "html": "<h3>Our Vision</h3>",
+      "text": "Our Vision"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                    To build a progressive, transparent, and united Kebbi State where every citizen has equal opportunities for growth, development, and meaningful participation in governance and societal advancement.\n                </p>",
+      "text": "To build a progressive, transparent, and united Kebbi State where every citizen has equal opportunities for growth, development, and meaningful participation in governance and societal advancement."
+    },
+    {
+      "kind": "heading",
+      "html": "<h3>Our Mission</h3>",
+      "text": "Our Mission"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                    To build a strong, connected civic network across Kebbi State—a platform where our collective voice influences the future of our state. We mobilize and empower citizens through advocacy, education, and community engagement.\n                </p>",
+      "text": "To build a strong, connected civic network across Kebbi State—a platform where our collective voice influences the future of our state. We mobilize and empower citizens through advocacy, education, and community engagement."
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>The Five Pillars of KPN</h2>",
+      "text": "The Five Pillars of KPN"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Our work is categorized into five core functions that drive progress across the state.</p>",
+      "text": "Our work is categorized into five core functions that drive progress across the state."
+    },
+    {
+      "kind": "heading",
+      "html": "<h4> KPN MEDIA</h4>",
+      "text": "KPN MEDIA"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                        The KPN Newsroom provides verified, grassroots reporting, community alerts, and development news from all 225 wards in Kebbi State.\n                    </p>",
+      "text": "The KPN Newsroom provides verified, grassroots reporting, community alerts, and development news from all 225 wards in Kebbi State."
+    },
+    {
+      "kind": "heading",
+      "html": "<h4> KPN CIVIC</h4>",
+      "text": "KPN CIVIC"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                        Promoting good governance, voter education, and holding leadership accountable at the local, zonal, and state levels.\n                    </p>",
+      "text": "Promoting good governance, voter education, and holding leadership accountable at the local, zonal, and state levels."
+    },
+    {
+      "kind": "heading",
+      "html": "<h4> KPN COMMUNITY</h4>",
+      "text": "KPN COMMUNITY"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                        Welfare programs, charity drives, and direct community interventions designed to support the vulnerable and build local resilience.\n                    </p>",
+      "text": "Welfare programs, charity drives, and direct community interventions designed to support the vulnerable and build local resilience."
+    },
+    {
+      "kind": "heading",
+      "html": "<h4> KPN OPPORTUNITIES</h4>",
+      "text": "KPN OPPORTUNITIES"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                        A centralized hub connecting the youth of Kebbi State to scholarships, grants, jobs, and empowerment fellowships.\n                    </p>",
+      "text": "A centralized hub connecting the youth of Kebbi State to scholarships, grants, jobs, and empowerment fellowships."
+    },
+    {
+      "kind": "heading",
+      "html": "<h4> KPN ADVOCACY</h4>",
+      "text": "KPN ADVOCACY"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                        Championing policy changes, infrastructural development, and social justice campaigns that directly impact the lives of Kebbi citizens.\n                    </p>",
+      "text": "Championing policy changes, infrastructural development, and social justice campaigns that directly impact the lives of Kebbi citizens."
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>Our Network Structure</h2>",
+      "text": "Our Network Structure"
+    },
+    {
+      "kind": "heading",
+      "html": "<h6>State Executive</h6>",
+      "text": "State Executive"
+    },
+    {
+      "kind": "body",
+      "html": "<p>State-wide Leadership</p>",
+      "text": "State-wide Leadership"
+    },
+    {
+      "kind": "heading",
+      "html": "<h6>Senatorial Zones</h6>",
+      "text": "Senatorial Zones"
+    },
+    {
+      "kind": "body",
+      "html": "<p>3 Zonal Teams</p>",
+      "text": "3 Zonal Teams"
+    },
+    {
+      "kind": "heading",
+      "html": "<h6>LGA Network</h6>",
+      "text": "LGA Network"
+    },
+    {
+      "kind": "body",
+      "html": "<p>21 Local Governments</p>",
+      "text": "21 Local Governments"
+    },
+    {
+      "kind": "heading",
+      "html": "<h6>Ward Communities</h6>",
+      "text": "Ward Communities"
+    },
+    {
+      "kind": "body",
+      "html": "<p>225 Wards</p>",
+      "text": "225 Wards"
+    }
+  ]
+}

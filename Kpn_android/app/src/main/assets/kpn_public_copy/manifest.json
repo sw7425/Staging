@@ -1,0 +1,32 @@
+{
+  "home": {
+    "source": "core/templates/core/home.html",
+    "sha256": "b4fce673bbcb1a8a887947c66d2a1843990c01129ed8e5909bbc5de7f7dd336a",
+    "blocks": 20,
+    "questions": 0
+  },
+  "about": {
+    "source": "core/templates/core/about.html",
+    "sha256": "9eb42e1c07887950ede98102c10830f13eb876ea9f1bb0f20ff90231be803fb5",
+    "blocks": 31,
+    "questions": 0
+  },
+  "conduct": {
+    "source": "core/templates/core/code_of_conduct.html",
+    "sha256": "56d339b3bcee4c96dfc292caa1c1bf5f31f0c39cec819c1a5696e00308f8acfa",
+    "blocks": 38,
+    "questions": 0
+  },
+  "faq": {
+    "source": "core/templates/core/faq.html",
+    "sha256": "16e7e8575f43dfd3285f1e227f6b3481511e88861d45151dc53503fae63dae85",
+    "blocks": 6,
+    "questions": 9
+  },
+  "support": {
+    "source": "core/templates/core/support_us.html",
+    "sha256": "668510a78474b3a891e295756e40c7ea2a9b0dec2352ba855026da70ccc3936f",
+    "blocks": 16,
+    "questions": 0
+  }
+}

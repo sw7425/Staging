@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Assistant Media Director Dashboard - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+    {% include 'staff/dashboards/includes/_role_header.html' with title="Assistant Media Director Dashboard" icon_class="fas fa-photo-video" welcome_messages="Supporting KPN media and communications.|Amplifying community voices.|Every story matters." %}
+    {% include 'staff/dashboards/includes/_profile_section.html' %}
+
+    <!-- My Statistics -->
+    <div class="mb-8">
+        <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-chart-pie mr-2 text-kpn-blue"></i> My Statistics
+</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-green-100 dark:bg-green-900/30 text-kpn-green">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{reports_submitted|default:0}}</p>
+        <p class="kpn-stat-label">Reports Submitted</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-blue-100 dark:bg-blue-900/30 text-kpn-blue">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{published_stories|default:0}}</p>
+        <p class="kpn-stat-label">Published Stories</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{pending_review|default:0}}</p>
+        <p class="kpn-stat-label">Pending Review</p>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- My Tasks -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-tasks mr-2 text-orange-500"></i> My Tasks
+</h2>
+            <div class="flex flex-col gap-1">
+                <a href="{% url 'campaigns:newsroom' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-500">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div>
+                        <span>KPN Newsroom</span>
+                        <span class="text-xs text-gray-500">View all published and pending stories</span>
+                    </div>
+                </a>
+                <a href="{% url 'staff:view_reports' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-500">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <span>Media Reports</span>
+                        <span class="text-xs text-gray-500">Review media activity and coverage stats</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- My Responsibilities -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-clipboard-list mr-2 text-purple-500"></i> My Responsibilities
+</h2>
+            <ul class="space-y-4">
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">1</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Content Support:</strong> Assist the Media Director in sourcing, writing, and publishing community news and reports.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">2</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Story Verification:</strong> Help verify community-submitted reports before they are forwarded for formal review.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">3</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Media Outreach:</strong> Support media engagement with community reporters, local journalists, and content contributors.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">4</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Social Media Management:</strong> Assist in managing KPN social media platforms, content scheduling, and community engagement.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Quick Profile Link -->
+    <div class="text-right">
+        <a href="{% url 'staff:profile' %}" class="inline-flex items-center text-sm text-gray-500 hover:text-kpn-green font-semibold transition">
+            <i class="fas fa-user-edit mr-2"></i> Edit My Profile
+        </a>
+    </div>
+</div>
+{% endblock %}

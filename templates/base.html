@@ -1,0 +1,501 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Kebbi Progressive Youth Network (KPN){% endblock %}</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Kebbi Progressive Youth Network - Driving Change Across Kebbi State">
+    <meta name="theme-color" content="#28a745">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KPN">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/kpn-logo.png' %}">
+
+    <script src="{% static 'staff/js/appearance.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'staff/css/tailwind.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'staff/css/kpn-design.css' %}">
+    <script defer src="{% static 'vendor/alpine/alpine.min.js' %}"></script>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="kpn-app-body bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+
+    <a href="#main-content" class="kpn-skip-link">Skip to content</a>
+    <!-- ── Navigation ─────────────────────────────────────────── -->
+    <nav class="kpn-nav" x-data="{ mobileMenu: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-14">
+
+                <!-- Logo -->
+                <a href="{% url 'core:home' %}" class="flex items-center gap-2.5 flex-shrink-0">
+                    <img src="{% static 'images/kpn-logo.png' %}" alt="KPN Logo" class="w-8 h-8 rounded-full object-cover">
+                    <span class="text-sm font-bold text-kpn-green tracking-tight">KPN</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden xl:flex items-center gap-1">
+                    <a href="{% url 'core:home' %}" class="kpn-nav-link">Home</a>
+                    <a href="{% url 'campaigns:newsroom' %}" class="kpn-nav-link">Newsroom</a>
+                    <a href="{% url 'core:community' %}" class="kpn-nav-link">Community</a>
+                    <a href="{% url 'core:opportunities' %}" class="kpn-nav-link">Opportunities</a>
+                    <a href="{% url 'core:civic' %}" class="kpn-nav-link">Civic</a>
+                    <a href="{% url 'core:advocacy' %}" class="kpn-nav-link">Advocacy</a>
+
+                    <!-- KPN Network Dropdown -->
+                    <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button class="kpn-nav-link flex items-center gap-1">
+                            KPN Network
+                            <i class="fas fa-chevron-down text-[10px] opacity-60"></i>
+                        </button>
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 translate-y-1"
+                             class="kpn-dropdown top-full left-0"
+                             x-cloak>
+                            <a href="{% url 'core:patrons' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-crown text-yellow-500 w-4 text-center"></i>Our Patrons
+                            </a>
+                            <a href="{% url 'core:leadership' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-sitemap text-blue-500 w-4 text-center"></i>Leadership Directory
+                            </a>
+                            <a href="{% url 'core:code_of_conduct' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-file-contract text-gray-500 w-4 text-center"></i>Code of Conduct
+                            </a>
+                            <a href="{% url 'core:impact' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-chart-line text-kpn-green w-4 text-center"></i>Impact &amp; Metrics
+                            </a>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'core:about' %}" class="kpn-nav-link">About</a>
+
+                    <!-- Divider -->
+                    <div class="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
+
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'core:report_a_story' %}" class="kpn-nav-link text-kpn-blue dark:text-blue-400">
+                            <i class="fas fa-bullhorn text-xs mr-0.5"></i>Report Story
+                        </a>
+
+                        <!-- Notification Bell -->
+                        <div class="relative" x-data="{ bellOpen: false }" @click.outside="bellOpen = false">
+                            <button @click="bellOpen = !bellOpen"
+                                    class="kpn-icon-btn relative"
+                                    aria-label="Notifications">
+                                <i class="fas fa-bell text-sm"></i>
+                                {% if unread_notifications_count %}
+                                <span class="kpn-count-badge bg-red-500 text-white absolute -top-1 -right-1 text-[9px]">
+                                    {{ unread_notifications_count }}
+                                </span>
+                                {% endif %}
+                            </button>
+
+                            <!-- Bell dropdown -->
+                            <div x-show="bellOpen" x-cloak
+                                 x-transition:enter="transition ease-out duration-150"
+                                 x-transition:enter-start="opacity-0 translate-y-1"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 class="absolute right-0 mt-1 w-80 kpn-card z-50">
+                                <div class="kpn-card-header">
+                                    <span class="text-sm font-semibold">Notifications</span>
+                                    {% if unread_notifications_count %}
+                                    <a href="{% url 'core:mark_notifications_read' %}"
+                                       class="text-xs text-kpn-blue hover:underline">
+                                        Mark all read
+                                    </a>
+                                    {% endif %}
+                                </div>
+                                <div class="max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700">
+                                    {% for notif in recent_notifications %}
+                                    <a href="{{ notif.link|default:'#' }}"
+                                       class="flex items-start gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors {% if not notif.is_read %}bg-green-50/60 dark:bg-green-900/10{% endif %}">
+                                        <div class="mt-0.5 w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 text-xs
+                                            {% if notif.notif_type == 'SUCCESS' %}bg-green-100 text-green-600
+                                            {% elif notif.notif_type == 'WARNING' %}bg-yellow-100 text-yellow-600
+                                            {% elif notif.notif_type == 'ACTION' %}bg-red-100 text-red-600
+                                            {% else %}bg-blue-100 text-blue-600{% endif %}">
+                                            <i class="fas {% if notif.notif_type == 'SUCCESS' %}fa-check{% elif notif.notif_type == 'WARNING' %}fa-exclamation{% elif notif.notif_type == 'ACTION' %}fa-bolt{% else %}fa-info{% endif %}"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-xs font-semibold text-gray-800 dark:text-white truncate">{{ notif.title }}</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{{ notif.message|truncatechars:70 }}</p>
+                                            <p class="text-[10px] text-gray-400 mt-0.5">{{ notif.created_at|timesince }} ago</p>
+                                        </div>
+                                    </a>
+                                    {% empty %}
+                                    <div class="kpn-empty py-8">
+                                        <div class="kpn-empty-icon">
+                                            <i class="fas fa-bell-slash"></i>
+                                        </div>
+                                        <p class="kpn-empty-title text-sm">No notifications</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'staff:dashboard' %}"
+                           class="kpn-btn kpn-btn-primary kpn-btn-sm">
+                            <i class="fas fa-th-large text-xs"></i> Dashboard
+                        </a>
+
+                        <a href="{% url 'staff:logout' %}"
+                           class="kpn-nav-link text-gray-500 hover:text-red-500">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a href="{% url 'staff:login' %}" class="kpn-nav-link">Login</a>
+                        <a href="{% url 'staff:register' %}" class="kpn-btn kpn-btn-primary kpn-btn-sm">
+                            Join Us
+                        </a>
+                    {% endif %}
+
+                    <!-- Same appearance choices as the Android app -->
+                    <select data-appearance-select class="kpn-appearance-select" aria-label="Appearance">
+                        <option value="system">System</option>
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+
+                <!-- Mobile Controls -->
+                <div class="xl:hidden flex items-center gap-1">
+                    {% if user.is_authenticated %}
+                    <div class="relative" x-data="{ bellOpen: false }" @click.outside="bellOpen = false">
+                        <button @click="bellOpen = !bellOpen" class="kpn-icon-btn relative">
+                            <i class="fas fa-bell text-sm"></i>
+                            {% if unread_notifications_count %}
+                            <span class="kpn-count-badge bg-red-500 text-white absolute -top-1 -right-1 text-[9px]">
+                                {{ unread_notifications_count }}
+                            </span>
+                            {% endif %}
+                        </button>
+                        <div x-show="bellOpen" x-cloak
+                             class="absolute right-0 mt-1 w-72 kpn-card z-50">
+                            <div class="kpn-card-header">
+                                <span class="text-sm font-semibold">Notifications</span>
+                            </div>
+                            <div class="max-h-64 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700">
+                                {% for notif in recent_notifications %}
+                                <a href="{{ notif.link|default:'#' }}"
+                                   class="flex items-start gap-2.5 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                    <div class="mt-0.5 w-5 h-5 rounded flex items-center justify-center flex-shrink-0 text-[10px]
+                                        {% if notif.notif_type == 'SUCCESS' %}bg-green-100 text-green-600
+                                        {% elif notif.notif_type == 'WARNING' %}bg-yellow-100 text-yellow-600
+                                        {% elif notif.notif_type == 'ACTION' %}bg-red-100 text-red-600
+                                        {% else %}bg-blue-100 text-blue-600{% endif %}">
+                                        <i class="fas {% if notif.notif_type == 'SUCCESS' %}fa-check{% elif notif.notif_type == 'WARNING' %}fa-exclamation{% elif notif.notif_type == 'ACTION' %}fa-bolt{% else %}fa-info{% endif %}"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs font-semibold truncate">{{ notif.title }}</p>
+                                        <p class="text-[10px] text-gray-400">{{ notif.created_at|timesince }} ago</p>
+                                    </div>
+                                </a>
+                                {% empty %}
+                                <p class="text-xs text-center text-gray-400 py-4">No notifications</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <select data-appearance-select class="kpn-appearance-select" aria-label="Appearance">
+                        <option value="system">System</option>
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                    <button @click="mobileMenu = !mobileMenu"
+                            class="kpn-icon-btn"
+                            :aria-label="mobileMenu ? 'Close menu' : 'Open menu'" :aria-expanded="mobileMenu" aria-controls="kpn-mobile-menu">
+                        <i class="fas fa-bars text-sm" x-show="!mobileMenu"></i>
+                        <i class="fas fa-times text-sm" x-show="mobileMenu" x-cloak></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="kpn-mobile-menu" @keydown.escape.window="mobileMenu = false" x-show="mobileMenu"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-2"
+             x-cloak
+             class="xl:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <div class="px-3 py-3 space-y-0.5">
+                <!-- Primary links -->
+                <a href="{% url 'core:home' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-home text-kpn-green w-4 text-center text-xs"></i>Home
+                </a>
+                <a href="{% url 'campaigns:newsroom' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-newspaper text-orange-500 w-4 text-center text-xs"></i>Newsroom
+                </a>
+                <a href="{% url 'core:community' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-users text-blue-500 w-4 text-center text-xs"></i>Community
+                </a>
+                <a href="{% url 'core:opportunities' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-briefcase text-indigo-500 w-4 text-center text-xs"></i>Opportunities
+                </a>
+                <a href="{% url 'core:civic' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-landmark text-gray-500 w-4 text-center text-xs"></i>Civic
+                </a>
+                <a href="{% url 'core:advocacy' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-bullhorn text-red-500 w-4 text-center text-xs"></i>Advocacy
+                </a>
+
+                <!-- KPN Network Section -->
+                <div class="pt-2 pb-1">
+                    <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">KPN Network</p>
+                </div>
+                <div class="pl-4 border-l border-gray-200 dark:border-gray-700 ml-3 space-y-0.5">
+                    <a href="{% url 'core:patrons' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-crown text-yellow-500 w-4 text-center text-xs"></i>Our Patrons
+                    </a>
+                    <a href="{% url 'core:leadership' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-sitemap text-blue-500 w-4 text-center text-xs"></i>Leadership Directory
+                    </a>
+                    <a href="{% url 'core:code_of_conduct' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-file-contract text-gray-500 w-4 text-center text-xs"></i>Code of Conduct
+                    </a>
+                    <a href="{% url 'core:impact' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-chart-line text-kpn-green w-4 text-center text-xs"></i>Impact &amp; Metrics
+                    </a>
+                </div>
+
+                <a href="{% url 'core:about' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-info-circle text-kpn-blue w-4 text-center text-xs"></i>About KPN
+                </a>
+
+                <!-- Auth actions -->
+                <div class="pt-2 border-t border-gray-100 dark:border-gray-800 mt-2 space-y-0.5">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'core:report_a_story' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium text-kpn-blue dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                            <i class="fas fa-bullhorn w-4 text-center text-xs"></i>Report a Story
+                        </a>
+                        <a href="{% url 'staff:dashboard' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-semibold text-white bg-kpn-green hover:bg-green-600 transition-colors">
+                            <i class="fas fa-th-large w-4 text-center text-xs"></i>Dashboard
+                        </a>
+                        <a href="{% url 'staff:logout' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            <i class="fas fa-sign-out-alt w-4 text-center text-xs"></i>Logout
+                        </a>
+                    {% else %}
+                        <a href="{% url 'staff:login' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <i class="fas fa-sign-in-alt text-kpn-green w-4 text-center text-xs"></i>Login
+                        </a>
+                        <a href="{% url 'staff:register' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-semibold text-white bg-kpn-green hover:bg-green-600 transition-colors">
+                            <i class="fas fa-user-plus w-4 text-center text-xs"></i>Join Us
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Announcements Marquee ───────────────────────────────── -->
+    {% if user.is_authenticated %}
+    <div id="announcementBar" class="kpn-announcement-bar" hidden aria-label="Announcements">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-3">
+                <span class="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-kpn-green text-white px-2 py-0.5 rounded">
+                    <i class="fas fa-bullhorn" aria-hidden="true"></i>Updates
+                </span>
+                <div class="flex-1 overflow-hidden">
+                    <div id="announcementContent" class="kpn-announcement-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ── Flash Messages ─────────────────────────────────────── -->
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-3 space-y-2" id="kpn-messages">
+        {% for message in messages %}
+        <div class="kpn-alert {% if message.tags == 'error' %}kpn-alert-error{% elif message.tags == 'success' %}kpn-alert-success{% elif message.tags == 'warning' %}kpn-alert-warning{% else %}kpn-alert-info{% endif %}"
+             role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}" x-data="{ show: true }" x-show="show">
+            <span class="kpn-alert-icon">
+                <i class="fas {% if message.tags == 'error' %}fa-times-circle{% elif message.tags == 'success' %}fa-check-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} text-sm"></i>
+            </span>
+            <div class="kpn-alert-body">{{ message }}</div>
+            <button @click="show = false" class="kpn-alert-dismiss" aria-label="Dismiss">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ── Main Content ───────────────────────────────────────── -->
+    <main id="main-content" tabindex="-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ── Footer ─────────────────────────────────────────────── -->
+    <footer class="bg-gray-900 dark:bg-black border-t border-gray-800 text-white mt-16">
+        <!-- Top accent line -->
+        <div class="h-0.5 bg-gradient-to-r from-kpn-green via-kpn-blue to-kpn-green"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-3">
+                        <img src="{% static 'images/kpn-logo.png' %}" alt="KPN Logo" class="w-10 h-10 rounded-full">
+                        <h3 class="text-base font-bold text-kpn-green leading-tight">Kebbi Progressive<br>Youth Network</h3>
+                    </div>
+                    <p class="text-xs font-semibold text-kpn-green mb-3">One Voice, One Change</p>
+                    <p class="text-xs text-gray-400 leading-relaxed max-w-sm">
+                        KPN is a youth movement committed to promoting unity, civic participation, and development throughout Kebbi State.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'core:about' %}" class="text-xs text-gray-400 hover:text-kpn-green transition-colors">About Us</a></li>
+                        <li><a href="{% url 'core:leadership' %}" class="text-xs text-gray-400 hover:text-kpn-green transition-colors">Leadership</a></li>
+                        <li><a href="{% url 'core:support_us' %}" class="text-xs text-gray-400 hover:text-kpn-green transition-colors">Support Us</a></li>
+                        <li><a href="{% url 'core:faq' %}" class="text-xs text-gray-400 hover:text-kpn-green transition-colors">FAQ</a></li>
+                        <li><a href="{% url 'core:code_of_conduct' %}" class="text-xs text-gray-400 hover:text-kpn-green transition-colors">Code of Conduct</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">Connect</h4>
+                    <div class="flex gap-2 mb-4">
+                        <a href="https://www.facebook.com/kpnkebbi" target="_blank" rel="noopener"
+                           class="w-8 h-8 rounded-md bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"
+                           title="Facebook">
+                            <i class="fab fa-facebook text-xs"></i>
+                        </a>
+                        <a href="https://twitter.com/kpnkebbi" target="_blank" rel="noopener"
+                           class="w-8 h-8 rounded-md bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-blue-400 hover:text-white transition-colors"
+                           title="Twitter/X">
+                            <i class="fab fa-twitter text-xs"></i>
+                        </a>
+                        <a href="https://wa.me/2348102444491" target="_blank" rel="noopener"
+                           class="w-8 h-8 rounded-md bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-green-500 hover:text-white transition-colors"
+                           title="WhatsApp">
+                            <i class="fab fa-whatsapp text-xs"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@kpn.kb" target="_blank" rel="noopener"
+                           class="w-8 h-8 rounded-md bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-gray-600 hover:text-white transition-colors"
+                           title="TikTok">
+                            <i class="fab fa-tiktok text-xs"></i>
+                        </a>
+                    </div>
+                    <div class="space-y-1.5 text-xs text-gray-400">
+                        <p class="flex items-center gap-2"><i class="fas fa-envelope text-kpn-green w-3"></i>info@kpn.com.ng</p>
+                        <p class="flex items-center gap-2"><i class="fas fa-phone text-kpn-green w-3"></i>+234 8037851112</p>
+                        <p class="flex items-center gap-2 leading-relaxed"><i class="fas fa-map-marker-alt text-kpn-green w-3 flex-shrink-0 mt-0.5"></i>Sani Abacha Bypass Road, Birnin Kebbi</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-gray-500">
+                <p>&copy; {% now "Y" %} Kebbi Progressive Youth Network. All rights reserved.</p>
+                <div class="flex items-center gap-4">
+                    <a href="{% url 'core:code_of_conduct' %}" class="hover:text-kpn-green transition-colors">Code of Conduct</a>
+                    <a href="{% url 'core:contact' %}" class="hover:text-kpn-green transition-colors">Contact</a>
+                    <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
+                            class="kpn-icon-btn w-6 h-6 text-xs bg-gray-800 hover:bg-kpn-green hover:text-white transition-colors"
+                            aria-label="Back to top">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+
+    <!-- ── PWA Service Worker ─────────────────────────────────── -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('{% url 'core:service_worker' %}', { scope: '/' })
+                    .then(async r => {
+                        // Retire only KPN's old static-scoped worker after root registration.
+                        const registrations = await navigator.serviceWorker.getRegistrations();
+                        await Promise.all(registrations.filter(item => {
+                            const worker = item.active || item.waiting || item.installing;
+                            return worker && new URL(worker.scriptURL).pathname === '/static/sw.js';
+                        }).map(item => item.unregister()));
+                    })
+                    .catch(e => console.log('SW registration failed:', e));
+            });
+        }
+
+        // PWA Install prompt
+        let deferredPrompt;
+        const installPrompt = document.createElement('div');
+        installPrompt.id = 'kpn-install-prompt';
+        installPrompt.style.cssText = `
+            position:fixed; bottom:1rem; left:50%; transform:translateX(-50%);
+            background:#111827; color:white; padding:0.75rem 1rem;
+            border-radius:0.5rem; border:1px solid #374151;
+            box-shadow:0 8px 24px rgba(0,0,0,0.4);
+            display:none; z-index:9999; max-width:90%;
+        `;
+        installPrompt.innerHTML = `
+            <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;justify-content:center;">
+                <span style="font-size:0.8125rem;font-weight:500;">
+                    <i class="fas fa-mobile-alt" style="color:#28a745;margin-right:0.375rem;"></i>
+                    Install KPN to Home Screen
+                </span>
+                <div style="display:flex;gap:0.5rem;">
+                    <button id="install-btn" style="background:#28a745;color:white;border:none;padding:0.375rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:500;cursor:pointer;">
+                        Install
+                    </button>
+                    <button id="dismiss-btn" style="background:transparent;color:#9ca3af;border:1px solid #374151;padding:0.375rem 0.625rem;border-radius:0.375rem;font-size:0.75rem;cursor:pointer;">
+                        Later
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(installPrompt);
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installPrompt.style.display = 'block';
+        });
+        document.getElementById('install-btn').addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            installPrompt.style.display = 'none';
+        });
+        document.getElementById('dismiss-btn').addEventListener('click', () => {
+            installPrompt.style.display = 'none';
+        });
+        window.addEventListener('appinstalled', () => {
+            installPrompt.style.display = 'none';
+        });
+    </script>
+
+    <!-- ── Typing Hero JS ─────────────────────────────────────── -->
+    <script src="{% static 'staff/js/typing-hero.js' %}"></script>
+
+    {% if user.is_authenticated and user_announcements %}
+    {{ announcement_data|json_script:"kpn-announcement-data" }}
+    <script src="{% static 'staff/js/announcements.js' %}"></script>
+    {% endif %}
+    <!-- Messages remain visible until explicitly dismissed. -->
+</body>
+</html>

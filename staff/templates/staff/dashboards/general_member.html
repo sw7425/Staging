@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Member Dashboard - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+    {% include 'staff/dashboards/includes/_role_header.html' with title="Member Dashboard" icon_class="fas fa-user" welcome_messages="Welcome to KPN.|Explore opportunities and stay connected.|One Voice, One Change." %}
+    {% include 'staff/dashboards/includes/_profile_section.html' %}
+
+    {% include 'telegram_integration/_telegram_status.html' with telegram_required=False %}
+
+    <!-- My Statistics -->
+    <div class="mb-8">
+        <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-chart-pie mr-2 text-kpn-blue"></i> My Statistics
+</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-green-100 dark:bg-green-900/30 text-kpn-green">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{user.get_status_display}}</p>
+        <p class="kpn-stat-label">My Status</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-blue-100 dark:bg-blue-900/30 text-kpn-blue">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{user.get_reporter_level_display}}</p>
+        <p class="kpn-stat-label">Reporter Level</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-purple-100 dark:bg-purple-900/30 text-purple-600">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{user.get_jurisdiction}}</p>
+        <p class="kpn-stat-label">My Jurisdiction</p>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- My Tasks -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-tasks mr-2 text-green-500"></i> My Tasks
+</h2>
+            <div class="flex flex-col gap-1">
+                <a href="{% url 'core:opportunities' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-500">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div>
+                        <span>Opportunities Hub</span>
+                        <span class="text-xs text-gray-500">Browse scholarships, jobs, and grants</span>
+                    </div>
+                </a>
+                <a href="{% url 'campaigns:newsroom' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-500">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div>
+                        <span>KPN Newsroom</span>
+                        <span class="text-xs text-gray-500">Read the latest community news</span>
+                    </div>
+                </a>
+                <a href="{% url 'core:network_rankings' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-500">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div>
+                        <span>Network Rankings</span>
+                        <span class="text-xs text-gray-500">See top communities and reporters</span>
+                    </div>
+                </a>
+                <a href="{% url 'staff:profile' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-500">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div>
+                        <span>My Profile</span>
+                        <span class="text-xs text-gray-500">Update your personal details and photo</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- My Responsibilities -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-clipboard-list mr-2 text-purple-500"></i> My Responsibilities
+</h2>
+            <ul class="space-y-4">
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">1</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Active Participation:</strong> Attend KPN meetings, events, and community activities in your ward regularly.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">2</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Community Engagement:</strong> Support civic initiatives, welfare programs, and positive community development.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">3</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Dues Compliance:</strong> Fulfil your financial obligations to the organization as required by the KPN constitution.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">4</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Referrals:</strong> Recommend trustworthy individuals to join KPN and grow the network in your community.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Quick Profile Link -->
+    <div class="text-right">
+        <a href="{% url 'staff:profile' %}" class="inline-flex items-center text-sm text-gray-500 hover:text-kpn-green font-semibold transition">
+            <i class="fas fa-user-edit mr-2"></i> Edit My Profile
+        </a>
+    </div>
+</div>
+{% endblock %}

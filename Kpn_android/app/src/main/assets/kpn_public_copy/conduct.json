@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "source": "core/templates/core/code_of_conduct.html",
+  "source_sha256": "56d339b3bcee4c96dfc292caa1c1bf5f31f0c39cec819c1a5696e00308f8acfa",
+  "blocks": [
+    {
+      "kind": "heading",
+      "html": "<h1>Code of Conduct</h1>",
+      "text": "Code of Conduct"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Article XII of the Kebbi Progressive Youth Network Constitution</p>",
+      "text": "Article XII of the Kebbi Progressive Youth Network Constitution"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                The Kebbi Progressive Youth Network (KPN) is built on the principles of unity, respect, and progressive development. \n                To safeguard the integrity of the network and ensure a constructive environment for all members, \n                <strong>Article XII of the KPN Constitution</strong> strictly defines our Code of Conduct and Disciplinary measures.\n            </p>",
+      "text": "The Kebbi Progressive Youth Network (KPN) is built on the principles of unity, respect, and progressive development. To safeguard the integrity of the network and ensure a constructive environment for all members, Article XII of the KPN Constitution strictly defines our Code of Conduct and Disciplinary measures."
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>Section 1: General Obligations</h2>",
+      "text": "Section 1: General Obligations"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Every registered member and appointed leader of the Kebbi Progressive Youth Network shall:</p>",
+      "text": "Every registered member and appointed leader of the Kebbi Progressive Youth Network shall:"
+    },
+    {
+      "kind": "body",
+      "html": "• <li>Uphold the aims and objectives of the KPN at all times.</li>",
+      "text": "Uphold the aims and objectives of the KPN at all times."
+    },
+    {
+      "kind": "body",
+      "html": "• <li>Conduct themselves in a manner that brings honor and respect to the organization.</li>",
+      "text": "Conduct themselves in a manner that brings honor and respect to the organization."
+    },
+    {
+      "kind": "body",
+      "html": "• <li>Respect the constitutional hierarchy and authority of the State Executive Council and recognized Zonal, LGA, and Ward leadership.</li>",
+      "text": "Respect the constitutional hierarchy and authority of the State Executive Council and recognized Zonal, LGA, and Ward leadership."
+    },
+    {
+      "kind": "body",
+      "html": "• <li>Promote unity and peace among members and the wider Kebbi State community.</li>",
+      "text": "Promote unity and peace among members and the wider Kebbi State community."
+    },
+    {
+      "kind": "body",
+      "html": "• <li>Attend statutory meetings and participate actively in KPN civic and community programs.</li>",
+      "text": "Attend statutory meetings and participate actively in KPN civic and community programs."
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>Section 2: Offenses and Prohibited Conduct</h2>",
+      "text": "Section 2: Offenses and Prohibited Conduct"
+    },
+    {
+      "kind": "body",
+      "html": "<p>The following acts constitute offenses against the Network and shall attract strict disciplinary action:</p>",
+      "text": "The following acts constitute offenses against the Network and shall attract strict disciplinary action:"
+    },
+    {
+      "kind": "heading",
+      "html": "<h4>Zero Tolerance Offenses</h4>",
+      "text": "Zero Tolerance Offenses"
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Financial Misappropriation:</strong> Embezzlement, fraud, or mismanagement of KPN funds or resources.</li>",
+      "text": "Financial Misappropriation: Embezzlement, fraud, or mismanagement of KPN funds or resources."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Hate Speech:</strong> The use of ethnic, religious, or gender-based slurs, or incitement of violence against any group.</li>",
+      "text": "Hate Speech: The use of ethnic, religious, or gender-based slurs, or incitement of violence against any group."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Sabotage:</strong> Engaging in anti-network activities or collaborating with entities to undermine KPN objectives.</li>",
+      "text": "Sabotage: Engaging in anti-network activities or collaborating with entities to undermine KPN objectives."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Insubordination:</strong> Flagrant disrespect or refusal to carry out lawful directives from the State Executive Council or immediate superiors.</li>",
+      "text": "Insubordination: Flagrant disrespect or refusal to carry out lawful directives from the State Executive Council or immediate superiors."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Defamation:</strong> Publishing or broadcasting false and malicious information against the Network, its leadership, or its members.</li>",
+      "text": "Defamation: Publishing or broadcasting false and malicious information against the Network, its leadership, or its members."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Dereliction of Duty:</strong> Consistent failure by an appointed leader to perform their constitutional duties (e.g., failure to submit mandatory reports).</li>",
+      "text": "Dereliction of Duty: Consistent failure by an appointed leader to perform their constitutional duties (e.g., failure to submit mandatory reports)."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Falsification:</strong> Forgery of KPN documents, ID tags, or misrepresentation of the Network to external bodies.</li>",
+      "text": "Falsification: Forgery of KPN documents, ID tags, or misrepresentation of the Network to external bodies."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Disruption:</strong> Deliberate disruption of KPN meetings, events, or official digital platforms.</li>",
+      "text": "Disruption: Deliberate disruption of KPN meetings, events, or official digital platforms."
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>Section 3: Disciplinary Procedures</h2>",
+      "text": "Section 3: Disciplinary Procedures"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                Discipline within KPN is administered fairly, transparently, and without prejudice. The \n                <strong>Director of Legal Affairs &amp; Ethics</strong> oversees the Disciplinary Committee, which handles all infractions.\n            </p>",
+      "text": "Discipline within KPN is administered fairly, transparently, and without prejudice. The Director of Legal Affairs & Ethics oversees the Disciplinary Committee, which handles all infractions."
+    },
+    {
+      "kind": "body",
+      "html": "1. <li><strong>Reporting:</strong> Any member can report a violation via the hierarchical reporting structure (Ward → LGA → Zone → State).</li>",
+      "text": "Reporting: Any member can report a violation via the hierarchical reporting structure (Ward → LGA → Zone → State)."
+    },
+    {
+      "kind": "body",
+      "html": "2. <li><strong>Investigation:</strong> The Disciplinary Committee shall investigate the allegations and grant the accused member a fair hearing.</li>",
+      "text": "Investigation: The Disciplinary Committee shall investigate the allegations and grant the accused member a fair hearing."
+    },
+    {
+      "kind": "body",
+      "html": "3. <li><strong>Recommendation:</strong> The Committee submits its findings and recommended sanctions to the State Executive Council.</li>",
+      "text": "Recommendation: The Committee submits its findings and recommended sanctions to the State Executive Council."
+    },
+    {
+      "kind": "body",
+      "html": "4. <li><strong>Ratification:</strong> The State Executive Council (or the President, in emergency cases) ratifies and enforces the sanction.</li>",
+      "text": "Ratification: The State Executive Council (or the President, in emergency cases) ratifies and enforces the sanction."
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>Section 4: Disciplinary Sanctions</h2>",
+      "text": "Section 4: Disciplinary Sanctions"
+    },
+    {
+      "kind": "body",
+      "html": "<p>Depending on the gravity of the offense, the following sanctions may be applied:</p>",
+      "text": "Depending on the gravity of the offense, the following sanctions may be applied:"
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Reprimand:</strong> A formal written warning (First offense / Minor infractions).</li>",
+      "text": "Reprimand: A formal written warning (First offense / Minor infractions)."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Suspension:</strong> Temporary removal from the Network or leadership position for a specified period not exceeding 6 months.</li>",
+      "text": "Suspension: Temporary removal from the Network or leadership position for a specified period not exceeding 6 months."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Fines / Restitution:</strong> Mandatory repayment of misappropriated funds or replacement of damaged property.</li>",
+      "text": "Fines / Restitution: Mandatory repayment of misappropriated funds or replacement of damaged property."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Removal from Office:</strong> Permanent stripping of leadership titles and responsibilities (Requires 2/3 majority vote of the State Executive Council).</li>",
+      "text": "Removal from Office: Permanent stripping of leadership titles and responsibilities (Requires 2/3 majority vote of the State Executive Council)."
+    },
+    {
+      "kind": "body",
+      "html": "• <li><strong>Expulsion:</strong> Complete revocation of KPN membership (Reserved for zero-tolerance offenses and severe sabotage).</li>",
+      "text": "Expulsion: Complete revocation of KPN membership (Reserved for zero-tolerance offenses and severe sabotage)."
+    },
+    {
+      "kind": "heading",
+      "html": "<h2>Section 5: Appeals</h2>",
+      "text": "Section 5: Appeals"
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                Any member subjected to disciplinary action has the right to appeal the decision within <strong>14 days</strong> \n                of receiving official notice. Appeals must be submitted in writing to the General Secretary, who shall convene \n                an independent Appeals Panel appointed by the President. The decision of the Appeals Panel shall be final.\n            </p>",
+      "text": "Any member subjected to disciplinary action has the right to appeal the decision within 14 days of receiving official notice. Appeals must be submitted in writing to the General Secretary, who shall convene an independent Appeals Panel appointed by the President. The decision of the Appeals Panel shall be final."
+    },
+    {
+      "kind": "heading",
+      "html": "<h3>One Voice, One Change.</h3>",
+      "text": "One Voice, One Change."
+    },
+    {
+      "kind": "body",
+      "html": "<p>\n                    By holding KPN membership or an ID tag, you expressly agree to abide by this Code of Conduct. \n                    Let us work together with integrity to build the Kebbi State of our dreams.\n                </p>",
+      "text": "By holding KPN membership or an ID tag, you expressly agree to abide by this Code of Conduct. Let us work together with integrity to build the Kebbi State of our dreams."
+    }
+  ]
+}
