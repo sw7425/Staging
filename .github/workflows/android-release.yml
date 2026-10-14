@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: android-release
     env:
-      KPN_KEYSTORE_FILE: ${{ runner.temp }}/kpn-release.jks
+      KPN_KEYSTORE_FILE: ${{ github.workspace }}/kpn-release.jks
       KPN_KEYSTORE_PASSWORD: ${{ secrets.KPN_KEYSTORE_PASSWORD }}
       KPN_KEY_PASSWORD: ${{ secrets.KPN_KEY_PASSWORD }}
       KPN_KEY_ALIAS: ${{ secrets.KPN_KEY_ALIAS }}
