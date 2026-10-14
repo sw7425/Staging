@@ -910,7 +910,7 @@ internal fun AnnouncementsScreen(vm: AppViewModel, s: AppState, nav: NavHostCont
 @Composable
 internal fun CreateAnnouncementScreen(vm:AppViewModel,s:AppState,nav:NavHostController) {
     val user=s.user ?: return
-    val scopes=when(user.tier){"STATE"->listOf("GENERAL","ZONAL","LGA","WARD");"ZONAL"->listOf("ZONAL","LGA","WARD");"LGA"->listOf("LGA","WARD");"WARD"->listOf("WARD");else->emptyList()}
+    val scopes=when(user.tier){"STATE"->listOf("GENERAL","STATE","ZONAL","LGA","WARD");"ZONAL"->listOf("ZONAL","LGA","WARD");"LGA"->listOf("LGA","WARD");"WARD"->listOf("WARD");else->emptyList()}
     LaunchedEffect(Unit){vm.loadRegistrationData();if(user.tier=="ZONAL")user.zone?.let{vm.loadLgas(it)};if(user.tier in listOf("LGA","WARD"))user.lga?.let{vm.loadWards(it)}}
     var title by remember{mutableStateOf("")};var content by remember{mutableStateOf("")};var scope by remember{mutableStateOf(scopes.firstOrNull().orEmpty())};var priority by remember{mutableStateOf("NORMAL")}
     var zone by remember{mutableStateOf(if(user.tier!="STATE"&&user.zone!=null)Zone(user.zone,user.zone_name.orEmpty()) else null)}
@@ -922,16 +922,17 @@ internal fun CreateAnnouncementScreen(vm:AppViewModel,s:AppState,nav:NavHostCont
         KpnTopBar("Create announcement",back={nav.popBackStack()})
         Column(Modifier.verticalScroll(rememberScrollState()).imePadding().padding(20.dp)) {
             FormSection("01","Announcement");KpnField("Title",title,{title=it});KpnField("Message",content,{content=it},lines=6)
-            FormSection("02","Audience","Only scopes permitted by your role are available. The server validates every target.");KpnDropdown("Scope",scope,scopes,{it.replace('_',' ')},{scope=it})
-            if(user.tier=="STATE"&&scope!="GENERAL")KpnDropdown("Senatorial zone",zone,s.zones,{it.name},{zone=it;lga=null;ward=null;vm.loadLgas(it.id)})
-            else if(scope!="GENERAL")Text(user.jurisdictionLabel,style=MaterialTheme.typography.bodyMedium,modifier=Modifier.padding(vertical=12.dp))
+            FormSection("02","Audience","Only scopes permitted by your role are available. The server validates every target.");KpnDropdown("Scope",scope,scopes,{if(it=="STATE")"State executive team" else if(it=="GENERAL")"General — all members" else it.replace('_',' ')},{scope=it})
+            if(scope=="STATE")Text("Only verified, active state executive team members receive this announcement.",style=MaterialTheme.typography.bodyMedium,modifier=Modifier.padding(vertical=12.dp))
+            if(user.tier=="STATE"&&scope !in listOf("GENERAL","STATE"))KpnDropdown("Senatorial zone",zone,s.zones,{it.name},{zone=it;lga=null;ward=null;vm.loadLgas(it.id)})
+            else if(scope !in listOf("GENERAL","STATE"))Text(user.jurisdictionLabel,style=MaterialTheme.typography.bodyMedium,modifier=Modifier.padding(vertical=12.dp))
             if(user.tier in listOf("STATE","ZONAL")&&scope in listOf("LGA","WARD"))KpnDropdown("LGA",lga,s.lgas,{it.name},{lga=it;ward=null;vm.loadWards(it.id)},enabled=zone!=null)
             if(user.tier!="WARD"&&scope=="WARD")KpnDropdown("Ward",ward,s.wards,{it.name},{ward=it},enabled=lga!=null)
             KpnDropdown("Priority",priority,listOf("LOW","NORMAL","HIGH","URGENT"),{it},{priority=it})
             TextButton(onClick={choosingExpiry=true}){Icon(Icons.Default.DateRange,"Set expiration");Spacer(Modifier.width(8.dp));Text(expiry?.let{"Expires after ${it.take(10)} (Nigeria time)"} ?: "Optional expiration date")}
             if(expiry!=null)TextButton(onClick={expiry=null}){Text("Remove expiration")}
             ErrorState(s.errors["announcements"]){vm.clearError("announcements")}
-            val targetReady=when(scope){"ZONAL"->zone!=null;"LGA"->lga!=null;"WARD"->ward!=null;else->scope=="GENERAL"}
+            val targetReady=when(scope){"ZONAL"->zone!=null;"LGA"->lga!=null;"WARD"->ward!=null;else->scope in listOf("GENERAL","STATE")}
             KpnPrimaryButton("Publish announcement",s.busy,title.isNotBlank()&&content.isNotBlank()&&targetReady){vm.createAnnouncement(AnnouncementDto(title=title,content=content,scope=scope,priority=priority,expires_at=expiry,target_zone=if(scope=="ZONAL")zone?.id else null,target_lga=if(scope=="LGA")lga?.id else null,target_ward=if(scope=="WARD")ward?.id else null)){nav.popBackStack()}}
         }
     }

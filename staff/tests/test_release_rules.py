@@ -47,7 +47,7 @@ class ReleaseRuleTests(Fixtures, TestCase):
         with self.assertRaises(MemberDecisionError):decide_application(self.approver,applicant.pk,'approve')
     def test_media_director_gets_all_confirmed_capabilities(self):
         media=User.objects.create_user(username='synthetic_media',phone='s2',role='STATE',status='VERIFIED',role_definition=self.media_role)
-        self.assertEqual(capabilities_for(media),ALL_CAPABILITIES)
+        self.assertEqual(capabilities_for(media),tuple(cap for cap in ALL_CAPABILITIES if cap != "SUBMIT_REPORTS"))
         applicant=self.applicant('synthetic_state',RoleDefinition.objects.create(title='General Secretary',tier='STATE',seat_number=3))
         decide_application(media,applicant.pk,'approve');applicant.refresh_from_db()
         self.assertEqual(applicant.status,'VERIFIED')

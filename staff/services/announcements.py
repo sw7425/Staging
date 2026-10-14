@@ -16,7 +16,9 @@ def deliver_announcement(announcement_id):
         if Notification.objects.filter(event='ANNOUNCEMENT', target_type='announcement', target_id=announcement.pk).exists():
             return 0
         users = User.objects.filter(status='VERIFIED', is_active=True)
-        if announcement.scope == 'ZONAL':
+        if announcement.scope == 'STATE':
+            users = users.filter(role='STATE', role_definition__tier='STATE', is_superuser=False)
+        elif announcement.scope == 'ZONAL':
             users = users.filter(zone_id=announcement.target_zone_id)
         elif announcement.scope == 'LGA':
             users = users.filter(lga_id=announcement.target_lga_id)

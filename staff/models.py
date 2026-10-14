@@ -420,6 +420,7 @@ class WardMeetingAttendance(models.Model):
 class Announcement(models.Model):
     SCOPE_CHOICES = [
         ('GENERAL', 'General - All KPN Members'),
+        ('STATE', 'State - State Executive Team'),
         ('ZONAL', 'Zonal - Specific Zone'),
         ('LGA', 'LGA - Specific LGA'),
         ('WARD', 'Ward - Specific Ward'),
@@ -466,9 +467,9 @@ class Announcement(models.Model):
     def clean(self):
         from django.core.exceptions import ValidationError
         
-        if self.scope == 'GENERAL':
+        if self.scope in {'GENERAL', 'STATE'}:
             if self.target_zone or self.target_lga or self.target_ward:
-                raise ValidationError("General announcements should not have zone, LGA, or ward targets.")
+                raise ValidationError("General and State announcements should not have zone, LGA, or ward targets.")
         elif self.scope == 'ZONAL':
             if not self.target_zone:
                 raise ValidationError("Zonal announcements must have a target zone.")
@@ -498,6 +499,10 @@ class Announcement(models.Model):
         )
         
         query = Q(scope='GENERAL')
+        if (user.role == 'STATE' and user.status == 'VERIFIED' and user.is_active
+                and not user.is_superuser and user.role_definition_id
+                and user.role_definition.tier == 'STATE'):
+            query |= Q(scope='STATE')
         
         if user.zone:
             query |= Q(scope='ZONAL', target_zone=user.zone)
@@ -513,6 +518,8 @@ class Announcement(models.Model):
     def get_target_display(self):
         if self.scope == 'GENERAL':
             return 'All KPN Members'
+        elif self.scope == 'STATE':
+            return 'State Executive Team'
         elif self.scope == 'ZONAL' and self.target_zone:
             return f'{self.target_zone.name} Zone'
         elif self.scope == 'LGA' and self.target_lga:

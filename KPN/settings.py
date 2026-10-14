@@ -285,6 +285,9 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@kpn.com.ng')
+# Bound SMTP failures instead of letting a blocked provider hang a request.
+EMAIL_TIMEOUT = config('EMAIL_TIMEOUT', default=10, cast=int)
+CONTACT_RECIPIENT_EMAIL = config('CONTACT_RECIPIENT_EMAIL', default='info@kpn.com.ng')
 
 # Security Settings
 # HTTPS/SSL Configuration

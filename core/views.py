@@ -354,7 +354,7 @@ This message was sent via the KPN contact form.
                 subject=email_subject,
                 message=email_body,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=['info@kpn.com.ng'],
+                recipient_list=[settings.CONTACT_RECIPIENT_EMAIL],
                 fail_silently=False,
             )
             

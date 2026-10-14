@@ -131,8 +131,8 @@ class FinanceSummaryView(APIView):
     def get(self,request):
         income=Donation.objects.filter(status='RECORDED').aggregate(v=Sum('amount'))['v'] or Decimal('0')
         expenses=Expense.objects.aggregate(v=Sum('amount'))['v'] or Decimal('0')
-        return Response({'scope':'STATE','total_income':str(income),'total_expenses':str(expenses),
-                         'balance':str(income-expenses),'pending_donations':Donation.objects.filter(status='UNVERIFIED').count()})
+        return Response({'scope':'STATE','total_income':format(income,'.2f'),'total_expenses':format(expenses,'.2f'),
+                         'balance':format(income-expenses,'.2f'),'pending_donations':Donation.objects.filter(status='UNVERIFIED').count()})
 
 class DonationListCreateView(generics.ListCreateAPIView):
     serializer_class=DonationSerializer
@@ -265,7 +265,13 @@ class PublicContactView(APIView):
                     raise serializers.ValidationError('Use a single-line name.')
                 return value
         form=ContactInput(data=request.data);form.is_valid(raise_exception=True);data=form.validated_data
-        send_mail(f"KPN Contact Form: Message from {data['name']}",f"Name: {data['name']}\nEmail: {data['email']}\n\n{data['message']}",settings.DEFAULT_FROM_EMAIL,['info@kpn.com.ng'],fail_silently=False)
+        from .auth import EmailDeliveryUnavailable
+        try:
+            sent = send_mail(f"KPN Contact Form: Message from {data['name']}",f"Name: {data['name']}\nEmail: {data['email']}\n\n{data['message']}",settings.DEFAULT_FROM_EMAIL,[settings.CONTACT_RECIPIENT_EMAIL],fail_silently=False)
+            if sent != 1:
+                raise RuntimeError('Email provider did not accept the contact message.')
+        except Exception:
+            raise EmailDeliveryUnavailable('We could not deliver your message at this time. Please try again later.') from None
         return Response({'message':'Thank you for contacting us! We will get back to you soon.'},status=201)
 class PublicFAQView(generics.ListAPIView):
     serializer_class=FAQSerializer; permission_classes=[permissions.AllowAny]

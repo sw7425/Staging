@@ -444,6 +444,8 @@
         let deferredPrompt;
         const installPrompt = document.createElement('div');
         installPrompt.id = 'kpn-install-prompt';
+        installPrompt.setAttribute('role', 'region');
+        installPrompt.setAttribute('aria-label', 'Install KPN');
         installPrompt.style.cssText = `
             position:fixed; bottom:1rem; left:50%; transform:translateX(-50%);
             background:#111827; color:white; padding:0.75rem 1rem;
@@ -458,7 +460,7 @@
                     Install KPN to Home Screen
                 </span>
                 <div style="display:flex;gap:0.5rem;">
-                    <button id="install-btn" style="background:#28a745;color:white;border:none;padding:0.375rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:500;cursor:pointer;">
+                    <button id="install-btn" style="background:#176b3a;color:white;border:none;padding:0.375rem 0.75rem;border-radius:0.375rem;font-size:0.75rem;font-weight:500;cursor:pointer;">
                         Install
                     </button>
                     <button id="dismiss-btn" style="background:transparent;color:#9ca3af;border:1px solid #374151;padding:0.375rem 0.625rem;border-radius:0.375rem;font-size:0.75rem;cursor:pointer;">
