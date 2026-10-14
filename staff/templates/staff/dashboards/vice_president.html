@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}Vice President Dashboard - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+    <!-- Header -->
+    {% include 'staff/dashboards/includes/_role_header.html' with title="Vice President Dashboard" icon_class="fas fa-user-shield" welcome_messages="Supporting the President in organizational leadership.|Ensuring smooth operations across all zones.|Committed to youth empowerment and progress." %}
+    
+    <!-- Profile Section -->
+    {% include 'staff/dashboards/includes/_profile_section.html' %}
+    
+    <!-- My Statistics -->
+    <div class="mb-8">
+        <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-chart-pie mr-2 text-kpn-blue"></i> Network Statistics
+</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-green-100 dark:bg-green-900/30 text-kpn-green">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{ total_members }}</p>
+        <p class="kpn-stat-label">Total Members</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-blue-100 dark:bg-blue-900/30 text-kpn-blue">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{ total_leaders }}</p>
+        <p class="kpn-stat-label">Total Leaders</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{ pending_members }}</p>
+        <p class="kpn-stat-label">Pending Members</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-red-100 dark:bg-red-900/30 text-red-600">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{ recent_disciplinary_actions|length|default:"0" }}</p>
+        <p class="kpn-stat-label">Disciplinary Cases</p>
+    </div>
+</div>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        
+        <!-- My Tasks (Quick Actions) -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-tasks mr-2 text-orange-500"></i> My Tasks
+</h2>
+            <div class="flex flex-col gap-1">
+                <a href="{% url 'staff:vice_president_disciplinary_review' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-500">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <div>
+                        <span>Disciplinary Review</span>
+                        <span class="text-xs text-gray-500">Review misconduct and approve suspensions</span>
+                    </div>
+                </a>
+                
+                <a href="{% url 'staff:vice_president_staff_directory' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-500">
+                        <i class="fas fa-address-book"></i>
+                    </div>
+                    <div>
+                        <span>Staff Directory</span>
+                        <span class="text-xs text-gray-500">View and manage KPN staff across all zones</span>
+                    </div>
+                </a>
+                
+                <a href="{% url 'staff:view_reports' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-500">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <span>View Reports & Analytics</span>
+                        <span class="text-xs text-gray-500">Monitor internal network reports</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- My Responsibilities -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-clipboard-list mr-2 text-purple-500"></i> My Responsibilities
+</h2>
+            <ul class="space-y-4">
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">1</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Executive Support:</strong> Deputize for the President and ensure that state-level directives are properly executed.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">2</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Zonal Oversight:</strong> Monitor the performance and activities of the Senatorial Zone Coordinators.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">3</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Disciplinary Authority:</strong> Review and adjudicate misconduct cases escalated from Zonal levels.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">4</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Network Growth:</strong> Drive membership expansion and verify the integrity of the staff directory.</span>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+
+    <!-- Analytics & Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        
+        <!-- Zone Statistics -->
+        <div class="kpn-card">
+            <h3 class="kpn-section-label mt-6">
+    <i class="fas fa-map mr-2 text-kpn-green"></i> Zone Statistics
+</h3>
+            {% if zone_stats %}
+            <div class="flex flex-col gap-1">
+                {% for stat in zone_stats %}
+                <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
+                    <div>
+                        <h4 class="font-bold text-gray-900 dark:text-white">{{ stat.zone.name }}</h4>
+                        <p class="text-xs text-gray-500">{{ stat.lgas }} LGAs</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-kpn-blue">{{ stat.total_members }} Members</p>
+                        <p class="text-xs text-gray-500">{{ stat.leaders }} Leaders</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="p-8 text-center border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+                <p class="text-gray-500">No zone data available.</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Recent Disciplinary Actions -->
+        <div class="kpn-card">
+            <h3 class="kpn-section-label mt-6">
+    <i class="fas fa-gavel mr-2 text-red-500"></i> Recent Disciplinary Actions
+</h3>
+            {% if recent_disciplinary_actions %}
+            <div class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                {% for action in recent_disciplinary_actions %}
+                <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg flex justify-between items-start bg-gray-50 dark:bg-gray-700/50">
+                    <div>
+                        <h4 class="font-bold text-gray-900 dark:text-white">{{ action.user.get_full_name }}</h4>
+                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ action.get_action_type_display }}</p>
+                    </div>
+                    <span class="text-xs font-bold px-2 py-1 rounded-full {% if action.is_approved %}kpn-badge kpn-badge-green{% else %}kpn-badge kpn-badge-yellow{% endif %}">
+                        {% if action.is_approved %}Approved{% else %}Pending{% endif %}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="p-8 text-center border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+                <p class="text-gray-500">No disciplinary actions recorded.</p>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

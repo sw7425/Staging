@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Assistant Women Leader Dashboard - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+    {% include 'staff/dashboards/includes/_role_header.html' with title="Assistant Women Leader Dashboard" icon_class="fas fa-female" welcome_messages="Supporting women's empowerment in KPN.|Assisting in welfare and advocacy.|Women's voices matter." %}
+    {% include 'staff/dashboards/includes/_profile_section.html' %}
+
+    <!-- My Statistics -->
+    <div class="mb-8">
+        <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-chart-pie mr-2 text-kpn-blue"></i> My Statistics
+</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-green-100 dark:bg-green-900/30 text-kpn-green">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{women_members_count|default:0}}</p>
+        <p class="kpn-stat-label">Women Members</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-purple-100 dark:bg-purple-900/30 text-purple-600">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{welfare_cases|default:0}}</p>
+        <p class="kpn-stat-label">Welfare Cases</p>
+    </div>
+</div>
+            <div class="kpn-stat-card">
+    <div class="kpn-stat-icon bg-blue-100 dark:bg-blue-900/30 text-kpn-blue">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div>
+        <p class="kpn-stat-value">{{events_supported|default:0}}</p>
+        <p class="kpn-stat-label">Events Supported</p>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- My Tasks -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-tasks mr-2 text-purple-500"></i> My Tasks
+</h2>
+            <div class="flex flex-col gap-1">
+                <a href="{% url 'staff:manage_staff' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-500">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <span>Women Members</span>
+                        <span class="text-xs text-gray-500">View all women registered in KPN</span>
+                    </div>
+                </a>
+                <a href="{% url 'staff:view_reports' %}" class="kpn-action-item">
+                    <div class="kpn-action-icon bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-500">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div>
+                        <span>Reports</span>
+                        <span class="text-xs text-gray-500">Review welfare and activity reports</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- My Responsibilities -->
+        <div class="kpn-card">
+            <h2 class="kpn-section-label mt-6">
+    <i class="fas fa-clipboard-list mr-2 text-purple-500"></i> My Responsibilities
+</h2>
+            <ul class="space-y-4">
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">1</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Welfare Support:</strong> Assist the Women Leader in managing welfare cases and providing support to women in need.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">2</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Event Organisation:</strong> Help coordinate women's empowerment events, workshops, and community activities.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">3</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Member Outreach:</strong> Reach out to women members, encourage participation, and address their concerns.</span>
+                </li>
+                <li class="flex items-start">
+                    <div class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mt-0.5 mr-3">4</div>
+                    <span class="text-gray-700 dark:text-gray-300"><strong>Documentation:</strong> Maintain records of women's welfare cases, event attendance, and program outcomes.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Quick Profile Link -->
+    <div class="text-right">
+        <a href="{% url 'staff:profile' %}" class="inline-flex items-center text-sm text-gray-500 hover:text-kpn-green font-semibold transition">
+            <i class="fas fa-user-edit mr-2"></i> Edit My Profile
+        </a>
+    </div>
+</div>
+{% endblock %}

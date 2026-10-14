@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Approve Members - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+
+  <!-- Page Header -->
+  <div class="kpn-page-header">
+    <div>
+      <h1 class="kpn-page-title">Pending Member Approvals</h1>
+      <p class="kpn-page-subtitle">Review and approve member applications</p>
+    </div>
+  </div>
+
+  <!-- Jurisdiction Filter — STATE role only -->
+  {% if user.role == 'STATE' %}
+  <div class="kpn-card mb-5">
+    <div class="kpn-card-header">
+      <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+        <i class="fas fa-filter mr-1 text-gray-400"></i> Filter by Jurisdiction
+      </span>
+    </div>
+    <div class="kpn-card-body">
+      <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Zone -->
+        <div class="kpn-form-group mb-0">
+          <label class="kpn-label-text">Zone</label>
+          <select name="zone" class="kpn-input kpn-select">
+            <option value="">All Zones</option>
+            {% for zone in zones %}
+            <option value="{{ zone.id }}" {% if zone_filter == zone.id|stringformat:"s" %}selected{% endif %}>{{ zone.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- LGA -->
+        <div class="kpn-form-group mb-0">
+          <label class="kpn-label-text">LGA</label>
+          <select name="lga" class="kpn-input kpn-select">
+            <option value="">All LGAs</option>
+            {% for lga in lgas %}
+            <option value="{{ lga.id }}" {% if lga_filter == lga.id|stringformat:"s" %}selected{% endif %}>{{ lga.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- Ward -->
+        <div class="kpn-form-group mb-0">
+          <label class="kpn-label-text">Ward</label>
+          <select name="ward" class="kpn-input kpn-select">
+            <option value="">All Wards</option>
+            {% for ward in wards %}
+            <option value="{{ ward.id }}" {% if ward_filter == ward.id|stringformat:"s" %}selected{% endif %}>{{ ward.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- Buttons -->
+        <div class="sm:col-span-2 lg:col-span-3 flex items-center gap-2 pt-1">
+          <button type="submit" class="kpn-btn kpn-btn-primary">
+            <i class="fas fa-filter"></i> Apply Filters
+          </button>
+          <a href="{% url 'staff:approve_members' %}" class="kpn-btn kpn-btn-secondary">
+            <i class="fas fa-redo"></i> Reset
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Applicants Table -->
+  <div class="kpn-table-wrap">
+    <div class="kpn-table-responsive overflow-x-auto">
+      <table class="kpn-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role Applied</th>
+            <th>Location</th>
+            <th>Phone</th>
+            <th>Applied</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in pending_users %}
+          <tr>
+            <td data-label="Name">
+              <div class="font-medium text-gray-900 dark:text-gray-100">{{ user.get_full_name }}</div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">{{ user.email }}</div>
+            </td>
+            <td data-label="Role Applied">
+              {% if user.role_definition %}
+                <span class="kpn-badge kpn-badge-blue">{{ user.role_definition.title }}</span>
+              {% else %}
+                <span class="kpn-badge kpn-badge-gray">General Member</span>
+              {% endif %}
+            </td>
+            <td data-label="Location" class="text-gray-600 dark:text-gray-400">{{ user.get_jurisdiction }}</td>
+            <td data-label="Phone" class="text-gray-600 dark:text-gray-400">{{ user.phone }}</td>
+            <td data-label="Applied" class="text-gray-600 dark:text-gray-400">{{ user.created_at|date:"M d, Y" }}</td>
+            <td data-label="Actions">
+              <a href="{% url 'staff:review_applicant' user.id %}" class="kpn-btn kpn-btn-sm kpn-btn-primary">
+                <i class="fas fa-eye"></i> Review
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="p-0 border-0">
+              <div class="kpn-empty">
+                <div class="kpn-empty-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <p class="kpn-empty-title">No Pending Applications</p>
+                <p class="kpn-empty-desc">All caught up — no applications awaiting review.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

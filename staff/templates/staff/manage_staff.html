@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Staff - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+
+  <!-- Page Header -->
+  <div class="kpn-page-header">
+    <div>
+      <h1 class="kpn-page-title">Manage All Staff</h1>
+      <p class="kpn-page-subtitle">View and manage all members of the organization</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="{% url 'staff:swap_positions' %}" class="kpn-btn kpn-btn-secondary">
+        <i class="fas fa-exchange-alt"></i> Swap Positions
+      </a>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="kpn-card mb-5">
+    <div class="kpn-card-body">
+      <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Search -->
+        <div class="kpn-form-group mb-0">
+          <label class="kpn-label-text">Search</label>
+          <div class="kpn-input-icon-wrap">
+            <i class="fas fa-search kpn-input-icon"></i>
+            <input type="text" name="search" value="{{ search }}"
+                   placeholder="Name, username, email…"
+                   class="kpn-input">
+          </div>
+        </div>
+        <!-- Role -->
+        <div class="kpn-form-group mb-0">
+          <label class="kpn-label-text">Role</label>
+          <select name="role" class="kpn-input kpn-select">
+            <option value="">All Roles</option>
+            <option value="GENERAL" {% if role_filter == 'GENERAL' %}selected{% endif %}>General Member</option>
+            <option value="STATE"   {% if role_filter == 'STATE'   %}selected{% endif %}>State Executive</option>
+            <option value="ZONAL"   {% if role_filter == 'ZONAL'   %}selected{% endif %}>Zonal Coordinator</option>
+            <option value="LGA"     {% if role_filter == 'LGA'     %}selected{% endif %}>LGA Coordinator</option>
+            <option value="WARD"    {% if role_filter == 'WARD'    %}selected{% endif %}>Ward Leader</option>
+          </select>
+        </div>
+        <!-- Zone -->
+        <div class="kpn-form-group mb-0">
+          <label class="kpn-label-text">Zone</label>
+          <select name="zone" class="kpn-input kpn-select">
+            <option value="">All Zones</option>
+            {% for zone in zones %}
+            <option value="{{ zone.id }}" {% if zone_filter == zone.id|stringformat:"s" %}selected{% endif %}>{{ zone.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- Status -->
+        <div class="kpn-form-group mb-0">
+          <label class="kpn-label-text">Status</label>
+          <select name="status" class="kpn-input kpn-select">
+            <option value="">All Statuses</option>
+            <option value="PENDING"   {% if status_filter == 'PENDING'   %}selected{% endif %}>Pending</option>
+            <option value="VERIFIED"  {% if status_filter == 'VERIFIED'  %}selected{% endif %}>Verified</option>
+            <option value="UNDER_REVIEW" {% if status_filter == 'UNDER_REVIEW' %}selected{% endif %}>Under review</option>
+            <option value="REJECTED" {% if status_filter == 'REJECTED' %}selected{% endif %}>Rejected / archived</option>
+            <option value="SUSPENDED" {% if status_filter == 'SUSPENDED' %}selected{% endif %}>Suspended</option>
+          </select>
+        </div>
+        <!-- Actions -->
+        <div class="sm:col-span-2 lg:col-span-4 flex items-center gap-2 pt-1">
+          <button type="submit" class="kpn-btn kpn-btn-primary">
+            <i class="fas fa-search"></i> Filter
+          </button>
+          <a href="{% url 'staff:manage_staff' %}" class="kpn-btn kpn-btn-secondary">
+            <i class="fas fa-redo"></i> Reset
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Staff Table -->
+  <div class="kpn-table-wrap">
+    <div class="kpn-table-responsive overflow-x-auto">
+      <table class="kpn-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for member in staff %}
+          <tr>
+            <td data-label="Name">
+              <div class="font-medium text-gray-900 dark:text-gray-100">{{ member.get_full_name }}</div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">{{ member.email }}</div>
+            </td>
+            <td data-label="Role">
+              {% if member.role_definition %}
+                <span class="kpn-badge kpn-badge-blue">{{ member.role_definition.title }}</span>
+              {% else %}
+                <span class="kpn-badge kpn-badge-gray">General Member</span>
+              {% endif %}
+            </td>
+            <td data-label="Location" class="text-gray-600 dark:text-gray-400">{{ member.get_jurisdiction }}</td>
+            <td data-label="Status">
+              {% if member.archived_at %}
+                <span class="kpn-badge kpn-badge-gray"><i class="fas fa-archive"></i> Archived</span>
+              {% elif member.status == 'VERIFIED' %}
+                <span class="kpn-badge kpn-badge-green"><i class="fas fa-check-circle"></i> Verified</span>
+              {% elif member.status == 'PENDING' %}
+                <span class="kpn-badge kpn-badge-yellow"><i class="fas fa-clock"></i> Pending</span>
+              {% elif member.status == 'UNDER_REVIEW' %}
+                <span class="kpn-badge kpn-badge-yellow">Under review</span>
+              {% elif member.status == 'REJECTED' %}
+                <span class="kpn-badge kpn-badge-red">Rejected</span>
+              {% elif member.status == 'SUSPENDED' %}
+                <span class="kpn-badge kpn-badge-orange"><i class="fas fa-pause-circle"></i> Suspended</span>
+              {% else %}
+                <span class="kpn-badge kpn-badge-red"><i class="fas fa-times-circle"></i> Dismissed</span>
+              {% endif %}
+            </td>
+            <td data-label="Joined" class="text-gray-600 dark:text-gray-400">{{ member.created_at|date:"M d, Y" }}</td>
+            <td data-label="Actions">
+              {% if member.archived_at %}
+              <span class="text-sm text-gray-600 dark:text-gray-400">Records preserved</span>
+              {% else %}
+              <!-- Alpine.js dropdown -->
+              <div class="relative inline-block text-left"
+                   x-data="{ open: false }"
+                   @click.outside="open = false">
+                <button @click="open = !open"
+                        class="kpn-btn kpn-btn-sm kpn-btn-blue"
+                        type="button"
+                        aria-haspopup="true"
+                        :aria-expanded="open">
+                  <i class="fas fa-cog"></i> Actions <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                <div x-show="open"
+                     x-cloak
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="kpn-dropdown right-0">
+                  <a href="{% url 'staff:edit_member_role' member.id %}" class="kpn-dropdown-item">
+                    <i class="fas fa-edit w-4"></i> Edit Role
+                  </a>
+                  {% if member.role != 'STATE' %}
+                  <a href="{% url 'staff:promote_member' member.id %}" class="kpn-dropdown-item">
+                    <i class="fas fa-level-up-alt w-4"></i> Promote
+                  </a>
+                  {% endif %}
+                  {% if member.role != 'GENERAL' %}
+                  <a href="{% url 'staff:demote_member' member.id %}" class="kpn-dropdown-item">
+                    <i class="fas fa-level-down-alt w-4"></i> Demote
+                  </a>
+                  {% endif %}
+                  {% if member.status == 'VERIFIED' %}
+                  <div class="kpn-dropdown-separator"></div>
+                  <a href="{% url 'staff:suspend_member' member.id %}" class="kpn-dropdown-item">
+                    <i class="fas fa-pause-circle w-4"></i> Suspend
+                  </a>
+                  <a href="{% url 'staff:dismiss_member' member.id %}" class="kpn-dropdown-item danger">
+                    <i class="fas fa-user-times w-4"></i> Dismiss
+                  </a>
+                  {% elif member.status == 'SUSPENDED' %}
+                  <div class="kpn-dropdown-separator"></div>
+                  <a href="{% url 'staff:reinstate_member' member.id %}" class="kpn-dropdown-item">
+                    <i class="fas fa-user-check w-4"></i> Reinstate
+                  </a>
+                  {% endif %}
+                </div>
+              </div>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="p-0 border-0">
+              <div class="kpn-empty">
+                <div class="kpn-empty-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <p class="kpn-empty-title">No Staff Members Found</p>
+                <p class="kpn-empty-desc">No members match your current filters. Try adjusting the search or filter criteria.</p>
+                <a href="{% url 'staff:manage_staff' %}" class="kpn-btn kpn-btn-secondary">
+                  <i class="fas fa-redo"></i> Clear Filters
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

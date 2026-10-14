@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "612327549297",
+    "project_id": "kpn-mobile",
+    "storage_bucket": "kpn-mobile.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:612327549297:android:5407e68d716e564650aed0",
+        "android_client_info": {
+          "package_name": "com.kpn.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBA48vXOFA7qykELMtzwWJt9xiuyzjSJQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

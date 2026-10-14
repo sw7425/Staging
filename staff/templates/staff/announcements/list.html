@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}My Announcements - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+
+  <!-- Page Header -->
+  <div class="kpn-page-header">
+    <div>
+      <h1 class="kpn-page-title">My Announcements</h1>
+      <p class="kpn-page-subtitle">Manage announcements visible to your jurisdiction</p>
+    </div>
+    <a href="{% url 'staff:create_announcement' %}" class="kpn-btn kpn-btn-primary">
+      <i class="fas fa-plus"></i> Create Announcement
+    </a>
+  </div>
+
+  {% if announcements %}
+  <!-- Announcements List -->
+  <div class="grid gap-4">
+    {% for announcement in announcements %}
+
+    <div class="kpn-card border-l-4 {% if announcement.priority == 'URGENT' %}border-red-500{% elif announcement.priority == 'HIGH' %}border-orange-500{% elif announcement.priority == 'NORMAL' %}border-blue-500{% else %}border-gray-300 dark:border-gray-600{% endif %}">
+
+      <!-- Card Header: title + badges + actions -->
+      <div class="kpn-card-header flex-wrap gap-y-3">
+        <div class="flex flex-wrap items-center gap-2 min-w-0">
+          <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{{ announcement.title }}</h3>
+
+          <!-- Status badge -->
+          {% if announcement.is_active %}
+            <span class="kpn-badge kpn-badge-green"><i class="fas fa-check-circle"></i> Active</span>
+          {% else %}
+            <span class="kpn-badge kpn-badge-gray"><i class="fas fa-pause-circle"></i> Inactive</span>
+          {% endif %}
+
+          <!-- Priority badge -->
+          {% if announcement.priority == 'URGENT' %}
+            <span class="kpn-badge kpn-badge-red"><i class="fas fa-exclamation-triangle"></i> {{ announcement.get_priority_display }}</span>
+          {% elif announcement.priority == 'HIGH' %}
+            <span class="kpn-badge kpn-badge-orange"><i class="fas fa-arrow-up"></i> {{ announcement.get_priority_display }}</span>
+          {% elif announcement.priority == 'NORMAL' %}
+            <span class="kpn-badge kpn-badge-blue">{{ announcement.get_priority_display }}</span>
+          {% else %}
+            <span class="kpn-badge kpn-badge-gray">{{ announcement.get_priority_display }}</span>
+          {% endif %}
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <form method="POST" action="{% url 'staff:toggle_announcement' announcement.pk %}" class="inline">
+            {% csrf_token %}
+            {% if announcement.is_active %}
+            <button type="submit" class="kpn-btn kpn-btn-sm kpn-btn-secondary">
+              <i class="fas fa-pause"></i> Deactivate
+            </button>
+            {% else %}
+            <button type="submit" class="kpn-btn kpn-btn-sm kpn-btn-primary">
+              <i class="fas fa-play"></i> Activate
+            </button>
+            {% endif %}
+          </form>
+          <a href="{% url 'staff:delete_announcement' announcement.pk %}" class="kpn-btn kpn-btn-sm kpn-btn-danger">
+            <i class="fas fa-trash"></i> Delete
+          </a>
+        </div>
+      </div>
+
+      <!-- Card Body: meta + content -->
+      <div class="kpn-card-body">
+        <!-- Meta row -->
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400 mb-3">
+          <span><i class="fas fa-bullhorn mr-1"></i>{{ announcement.get_scope_display }}</span>
+          <span><i class="fas fa-map-marker-alt mr-1"></i>{{ announcement.get_target_display }}</span>
+          <span><i class="fas fa-clock mr-1"></i>{{ announcement.created_at|date:"M d, Y H:i" }}</span>
+          {% if announcement.expires_at %}
+          <span class="text-orange-500 dark:text-orange-400">
+            <i class="fas fa-calendar-times mr-1"></i>Expires: {{ announcement.expires_at|date:"M d, Y H:i" }}
+          </span>
+          {% endif %}
+        </div>
+
+        <!-- Announcement content -->
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-md p-3">
+          <p class="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">{{ announcement.content }}</p>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <!-- Empty State -->
+  <div class="kpn-card">
+    <div class="kpn-empty">
+      <div class="kpn-empty-icon">
+        <i class="fas fa-bullhorn"></i>
+      </div>
+      <p class="kpn-empty-title">No Announcements Yet</p>
+      <p class="kpn-empty-desc">Create your first announcement to communicate with your jurisdiction members.</p>
+      <a href="{% url 'staff:create_announcement' %}" class="kpn-btn kpn-btn-primary">
+        <i class="fas fa-plus"></i> Create Announcement
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

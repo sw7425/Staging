@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}President Dashboard - KPN{% endblock %}
+
+{% block content %}
+<div class="kpn-page">
+
+    {% include 'staff/dashboards/includes/_role_header.html' with title="President Dashboard" icon_class="fas fa-crown" welcome_messages="You have full oversight of the organisation.|Leading KPN toward progress and change.|Empowering youth across Kebbi State.|One Voice, One Change. 🌟" %}
+
+    {% include 'staff/dashboards/includes/_profile_section.html' %}
+
+    {% include 'telegram_integration/_telegram_status.html' with telegram_required=True %}
+
+    <!-- ── SECTION 1: Network Overview ─────────────────────────────────── -->
+    <h2 class="kpn-section-label mt-6">
+        <i class="fas fa-globe-africa text-kpn-green"></i> Network Overview
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-green-100 dark:bg-green-900/30 text-kpn-green">
+                <i class="fas fa-users"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <p class="kpn-stat-value">{{ total_members }}</p>
+                    <span class="kpn-badge kpn-badge-green px-1.5 py-0.5 text-[10px]">
+                        <i class="fas fa-arrow-up"></i> {{ member_growth_this_month }}
+                    </span>
+                </div>
+                <p class="kpn-stat-label">Verified Members</p>
+                <p class="kpn-stat-meta">M: {{ male_members }} | F: {{ female_members }}</p>
+            </div>
+        </div>
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-blue-100 dark:bg-blue-900/30 text-kpn-blue">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value">{{ total_leaders }}</p>
+                <p class="kpn-stat-label">Active Leaders</p>
+                <p class="kpn-stat-meta text-yellow-600 dark:text-yellow-500">{{ pending_approvals }} Pending</p>
+            </div>
+        </div>
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600">
+                <i class="fas fa-star"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value">{{ trusted_reporters_count|default:"0" }}</p>
+                <p class="kpn-stat-label">Trusted Reporters</p>
+            </div>
+        </div>
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-purple-100 dark:bg-purple-900/30 text-purple-600">
+                <i class="fas fa-sitemap"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value">{{ total_zones }}</p>
+                <p class="kpn-stat-label">Zones</p>
+                <p class="kpn-stat-meta">{{ total_lgas }} LGAs | {{ total_wards }} Wards</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="kpn-card mb-8">
+        <div class="kpn-card-header"><h3 class="text-base font-semibold">Verified members by registration period</h3></div>
+        <div class="kpn-card-body">
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Current verified accounts, grouped by registration date. Five non-overlapping seven-day periods; these are not verification dates.</p>
+            <table class="w-full text-sm">
+                <thead><tr class="border-b border-gray-200 dark:border-gray-700"><th scope="col" class="text-left py-3">Registration period</th><th scope="col" class="text-right py-3">Verified accounts</th></tr></thead>
+                <tbody>{% for period in membership_periods %}<tr class="border-b border-gray-200 dark:border-gray-700"><th scope="row" class="text-left py-3 font-normal">{{ period.label }}</th><td class="text-right py-3">{{ period.count }}</td></tr>{% endfor %}</tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ── SECTION 2: Media & Reports ─────────────────────────────────── -->
+    <h2 class="kpn-section-label">
+        <i class="fas fa-newspaper text-orange-500"></i> Newsroom & Reports
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value">{{ community_reports_pending|default:"0" }}</p>
+                <p class="kpn-stat-label">Reports Pending</p>
+            </div>
+        </div>
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-green-100 dark:bg-green-900/30 text-green-600">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value">{{ total_campaigns }}</p>
+                <p class="kpn-stat-label">Published Articles</p>
+                <p class="kpn-stat-meta">Active: {{ active_campaigns }}</p>
+            </div>
+        </div>
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-blue-100 dark:bg-blue-900/30 text-blue-600">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value">{{ pending_reports }}</p>
+                <p class="kpn-stat-label">Internal Reports</p>
+                <p class="kpn-stat-meta">Total: {{ total_reports }}</p>
+            </div>
+        </div>
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-orange-100 dark:bg-orange-900/30 text-orange-600">
+                <i class="fas fa-calendar"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value">{{ total_events }}</p>
+                <p class="kpn-stat-label">Events</p>
+                <p class="kpn-stat-meta">Upcoming: {{ upcoming_events }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 3: Finance & Programs ──────────────────────────────── -->
+    <h2 class="kpn-section-label">
+        <i class="fas fa-chart-bar text-teal-600"></i> Finance & Programs
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-green-100 dark:bg-green-900/30 text-green-600">
+                <i class="fas fa-donate"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value text-base md:text-lg">₦{{ total_donations|floatformat:0 }}</p>
+                <p class="kpn-stat-label">Total Donations</p>
+            </div>
+        </div>
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-red-100 dark:bg-red-900/30 text-red-600">
+                <i class="fas fa-money-bill"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value text-base md:text-lg">₦{{ total_expenses|floatformat:0 }}</p>
+                <p class="kpn-stat-label">Total Expenses</p>
+            </div>
+        </div>
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-teal-100 dark:bg-teal-900/30 text-teal-600">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value">{{ total_womens_programs|add:total_youth_programs|add:total_welfare_programs }}</p>
+                <p class="kpn-stat-label">Total Programs</p>
+                <p class="kpn-stat-meta">W:{{ total_womens_programs }} Y:{{ total_youth_programs }} Wf:{{ total_welfare_programs }}</p>
+            </div>
+        </div>
+        <div class="kpn-stat-card">
+            <div class="kpn-stat-icon bg-red-100 dark:bg-red-900/30 text-red-600">
+                <i class="fas fa-gavel"></i>
+            </div>
+            <div>
+                <p class="kpn-stat-value">{{ pending_disciplinary }}</p>
+                <p class="kpn-stat-label">Disciplinary Pending</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 4: Quick Actions + Pending Applications ────────────── -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Quick Actions -->
+        <div class="kpn-card">
+            <div class="kpn-card-header">
+                <h3 class="text-sm font-semibold flex items-center">
+                    <i class="fas fa-bolt text-yellow-500 mr-2"></i> Quick Actions
+                </h3>
+            </div>
+            <div class="kpn-card-body p-3">
+                <div class="flex flex-col gap-1">
+                    <a href="{% url 'staff:approve_members' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-500"><i class="fas fa-user-check"></i></div>
+                        <span class="flex-1">Approve Applications</span>
+                        {% if pending_approvals %}<span class="kpn-count-badge bg-yellow-500 text-white">{{ pending_approvals }}</span>{% endif %}
+                    </a>
+                    <a href="{% url 'staff:manage_opportunities' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-500"><i class="fas fa-briefcase"></i></div>
+                        <span>Manage Opportunities</span>
+                    </a>
+                    <a href="{% url 'staff:manage_community_initiatives' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-500"><i class="fas fa-hands-helping"></i></div>
+                        <span>Manage Community Hub</span>
+                    </a>
+                    <a href="{% url 'staff:manage_advocacy_campaigns' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-500"><i class="fas fa-vote-yea"></i></div>
+                        <span>Manage Advocacy Hub</span>
+                    </a>
+                    <a href="{% url 'staff:trusted_reporters_list' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-500"><i class="fas fa-user-shield"></i></div>
+                        <span>Manage Trusted Reporters</span>
+                    </a>
+                    <a href="{% url 'staff:manage_staff' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-500"><i class="fas fa-users-cog"></i></div>
+                        <span>Manage All Staff</span>
+                    </a>
+                    <a href="{% url 'staff:view_reports' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-500"><i class="fas fa-chart-line"></i></div>
+                        <span>View All Reports</span>
+                    </a>
+                    <a href="{% url 'staff:disciplinary_actions' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-500"><i class="fas fa-gavel"></i></div>
+                        <span>Disciplinary Actions</span>
+                    </a>
+                    <a href="{% url 'staff:announcements_list' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-500"><i class="fas fa-bullhorn"></i></div>
+                        <span>Manage Announcements</span>
+                    </a>
+                    <a href="{% url 'staff:export_members_csv' %}" class="kpn-action-item">
+                        <div class="kpn-action-icon bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-500"><i class="fas fa-file-csv"></i></div>
+                        <span>Export Members CSV</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Applicants -->
+        <div class="lg:col-span-2 kpn-card">
+            <div class="kpn-card-header">
+                <h3 class="text-sm font-semibold flex items-center">
+                    <i class="fas fa-user-clock text-yellow-500 mr-2"></i> Pending Member Applications
+                </h3>
+            </div>
+            <div class="kpn-table-wrap border-0 border-t border-gray-200 dark:border-gray-700 rounded-none rounded-b-lg">
+                <div class="kpn-table-responsive overflow-x-auto">
+                    <table class="kpn-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Location</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for applicant in pending_applicants %}
+                            <tr>
+                                <td data-label="Name" class="font-medium">{{ applicant.get_full_name }}</td>
+                                <td data-label="Role" class="text-gray-500">
+                                    {% if applicant.role_definition %}
+                                        <span class="kpn-badge kpn-badge-blue">{{ applicant.role_definition.title }}</span>
+                                    {% else %}
+                                        <span class="kpn-badge kpn-badge-gray">{{ applicant.get_role_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Location" class="text-gray-500">{{ applicant.get_jurisdiction }}</td>
+                                <td data-label="Action">
+                                    <a href="{% url 'staff:review_applicant' applicant.id %}" class="kpn-btn kpn-btn-sm kpn-btn-primary">
+                                        <i class="fas fa-search"></i> Review
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="p-0">
+                                    <div class="kpn-empty py-8">
+                                        <div class="kpn-empty-icon w-10 h-10 text-base mb-2">
+                                            <i class="fas fa-check-circle text-green-500"></i>
+                                        </div>
+                                        <p class="kpn-empty-title text-sm">No pending applications</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 5: Community Reports Queue ────────────────────────── -->
+    <div class="kpn-card mb-8">
+        <div class="kpn-card-header">
+            <h3 class="text-sm font-semibold flex items-center">
+                <i class="fas fa-file-alt text-orange-500 mr-2"></i> Community Report Submissions
+            </h3>
+            <a href="{% url 'staff:media_director_dashboard' %}" class="kpn-btn kpn-btn-ghost kpn-btn-sm text-kpn-green">
+                Open in Newsroom <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+        <div class="kpn-table-wrap border-0 rounded-none rounded-b-lg">
+            <div class="kpn-table-responsive overflow-x-auto">
+                <table class="kpn-table">
+                    <thead>
+                        <tr>
+                            <th>Story</th>
+                            <th>Reporter</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th class="text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in community_reports %}
+                        <tr>
+                            <td data-label="Story" class="font-medium">{{ report.what_happened|truncatewords:8 }}</td>
+                            <td data-label="Reporter">{{ report.reporter_name }}</td>
+                            <td data-label="Location">
+                                {% if report.ward %}{{ report.ward.name }}, {% endif %}{% if report.lga %}{{ report.lga.name }}{% endif %}
+                            </td>
+                            <td data-label="Status">
+                                <span class="kpn-badge 
+                                    {% if report.status == 'PENDING' %}kpn-badge-yellow
+                                    {% elif report.status == 'APPROVED' %}kpn-badge-green
+                                    {% elif report.status == 'REJECTED' %}kpn-badge-red
+                                    {% else %}kpn-badge-blue{% endif %}">
+                                    {{ report.get_status_display }}
+                                </span>
+                            </td>
+                            <td data-label="Date" class="text-gray-500">{{ report.created_at|date:"M d, Y" }}</td>
+                            <td data-label="Action" class="text-right">
+                                <a href="{% url 'staff:community_report_review' report.id %}" class="kpn-btn kpn-btn-sm kpn-btn-secondary">
+                                    <i class="fas fa-search"></i> Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="p-0">
+                                <div class="kpn-empty py-12">
+                                    <div class="kpn-empty-icon">
+                                        <i class="fas fa-folder-open"></i>
+                                    </div>
+                                    <p class="kpn-empty-title">No reports submitted</p>
+                                    <p class="kpn-empty-desc">There are currently no community reports awaiting your review.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

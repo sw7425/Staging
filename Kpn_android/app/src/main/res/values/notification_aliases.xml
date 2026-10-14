@@ -1,0 +1,4 @@
+<resources>
+ <!-- Preserve the existing backend FCM icon contract without changing website push code. -->
+ <item name="ic_notification" type="drawable">@drawable/ic_kpn_notification</item>
+</resources>
