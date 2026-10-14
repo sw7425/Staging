@@ -7,4 +7,8 @@ python manage.py release_migrate
 if [[ "${KPN_STAGING_QA_BOOTSTRAP:-}" == "kpn-staging-fixtures-v1" ]]; then
   python manage.py bootstrap_staging_qa --apply
 fi
+# Explicitly approved, exact-service-guarded General-only receipt probe.
+if [[ "${KPN_STAGING_GENERAL_PROBE:-}" == "kpn-staging-general-receipt-v1" ]]; then
+  python manage.py probe_staging_general_announcement --broadcast --verify-http
+fi
 exec gunicorn KPN.wsgi:application --bind "0.0.0.0:${PORT:-8000}" --workers "${WEB_CONCURRENCY:-3}" --timeout 60 --access-logfile - --error-logfile -
