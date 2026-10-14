@@ -31,3 +31,7 @@ Local responsive previews are captured separately. Image inspection was unavaila
 Render's free plan blocks outbound SMTP ports, including Gmail's port 587. A timeout fix provides an honest failure response, not a working email provider. Restoring real email delivery requires an approved compatible provider configuration or a user-approved hosting plan change. No paid change was made.
 
 Android announcement-screen source includes State, but this change is not an installed or newly signed Android release. Rebuilding and device testing remain separate gates.
+
+## Production packaging
+
+See PRODUCTION_HANDOFF.md. This ZIP is a release candidate; production configuration and device delivery are not certified. Staging-only fixture/broadcast commands and startup activation hooks have been removed from this copy.
