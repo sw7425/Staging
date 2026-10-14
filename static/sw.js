@@ -1,5 +1,5 @@
-/* KPN v2: cache static assets only. Never retain personalized HTML/API data. */
-const CACHE_NAME = "kpn-cache-v2-safe-static";
+/* KPN v3: cache static assets only. Never retain personalized HTML/API data. */
+const CACHE_NAME = "kpn-cache-v3-state-quick-actions";
 const OFFLINE_PAGE = "/static/offline.html";
 const PRECACHE = [OFFLINE_PAGE, "/static/images/pwa-icon-192.png"];
 self.addEventListener("install", event => {

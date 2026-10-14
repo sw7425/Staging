@@ -10,7 +10,7 @@
 
 ## Quick actions
 
-All role website dashboards use the same permission-filtered component: four short icon-and-label tiles, with remaining authorized tools behind the native, keyboard-accessible More actions disclosure. Statistics, responsibilities, profile sections and work queues were not redesigned.
+All role website dashboards use the same permission-filtered component: four short icon-and-label tiles, with remaining authorized tools behind the native, keyboard-accessible More actions disclosure. Statistics, responsibilities, profile sections and work queues were not redesigned. The stylesheet URL and safe-static worker cache are versioned so existing installed website clients fetch the updated styles.
 
 The action catalog follows existing web permissions rather than granting web access from a broader API capability. Regression checks cover dashboard rendering and the actual GET destination of every offered action for all 41 leadership roles plus the general member.
 
