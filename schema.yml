@@ -4,6 +4,17 @@ info:
   version: 1.0.0
   description: KPN Mobile App API
 paths:
+  /api/v1/:
+    get:
+      operationId: root_retrieve
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/advocacy/:
     get:
       operationId: advocacy_list
@@ -71,6 +82,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdvocacyCampaign'
+          description: ''
+  /api/v1/advocacy/{id}/decision/:
+    post:
+      operationId: advocacy_decision_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - advocacy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
   /api/v1/announcements/:
     get:
@@ -246,6 +292,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedAnnouncementList'
+          description: ''
+  /api/v1/archive/:
+    get:
+      operationId: archive_retrieve
+      description: |-
+        The public Story Archive as data: the same query layer the web
+        archive uses (``story_intelligence.archive``), so results, filters
+        and privacy boundaries are identical. An exact Story ID query
+        returns the matching record directly (the web 302-redirects).
+      parameters:
+      - in: query
+        name: category
+        schema:
+          type: string
+      - in: query
+        name: date_from
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: date_to
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: institution
+        schema:
+          type: integer
+      - in: query
+        name: lga
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: topic
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: string
+      - in: query
+        name: ward
+        schema:
+          type: integer
+      - in: query
+        name: zone
+        schema:
+          type: integer
+      tags:
+      - archive
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
   /api/v1/articles/{id}/decision/:
     post:
@@ -492,6 +599,64 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/articles/mine/{id}/archive/:
+    post:
+      operationId: articles_mine_archive_create
+      description: |-
+        Archive a published article (KPN Media Phase 1): it leaves public
+        view but its record, Story ID and story history are preserved.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - articles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+  /api/v1/articles/mine/{id}/restore/:
+    post:
+      operationId: articles_mine_restore_create
+      description: Restore an archived article to PUBLISHED with its Story ID intact.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - articles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
   /api/v1/articles/review/:
     get:
       operationId: articles_review_list
@@ -1412,6 +1577,99 @@ paths:
                 type: object
                 additionalProperties: true
           description: ''
+  /api/v1/editorial/:
+    get:
+      operationId: editorial_retrieve
+      tags:
+      - editorial
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/editorial/{id}/:
+    get:
+      operationId: editorial_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - editorial
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/editorial/sources/:
+    get:
+      operationId: editorial_sources_retrieve
+      tags:
+      - editorial
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/editorial/sources/{id}/approve/:
+    post:
+      operationId: editorial_sources_approve_create
+      description: |-
+        Approve an editorial source (screen 197).
+
+        FLAG: the web editorial workspace has no separate "approve" action —
+        a source is approved by saving it with ``enabled=True`` through
+        source_edit (manager-only, audited as SOURCE_SAVED). This endpoint
+        performs exactly that state change with the same gate and audit.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - editorial
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/events/:
     get:
       operationId: events_list
@@ -1609,7 +1867,7 @@ paths:
           description: ''
   /api/v1/events/{id}/minutes/:
     get:
-      operationId: events_minutes_retrieve
+      operationId: events_minutes_retrieve_2
       parameters:
       - in: path
         name: id
@@ -1653,6 +1911,79 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+          description: ''
+  /api/v1/events/calendar/:
+    get:
+      operationId: events_calendar_retrieve
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/events/minutes/:
+    get:
+      operationId: events_minutes_retrieve
+      tags:
+      - events
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/field-reports/:
+    get:
+      operationId: field_reports_retrieve
+      tags:
+      - field-reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: field_reports_create
+      tags:
+      - field-reports
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
   /api/v1/finance/donations/:
     get:
@@ -1907,6 +2238,94 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedMediaItemList'
           description: ''
+  /api/v1/health/:
+    get:
+      operationId: health_retrieve
+      tags:
+      - health
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/ict/intelligence/:
+    get:
+      operationId: ict_intelligence_retrieve
+      tags:
+      - ict
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/ict/leadership/:
+    get:
+      operationId: ict_leadership_retrieve
+      tags:
+      - ict
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/ict/members/:
+    get:
+      operationId: ict_members_retrieve
+      tags:
+      - ict
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/ict/overview/:
+    get:
+      operationId: ict_overview_retrieve
+      tags:
+      - ict
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/ict/telegram/:
+    get:
+      operationId: ict_telegram_retrieve
+      tags:
+      - ict
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/impact/:
     get:
       operationId: impact_retrieve
@@ -1919,6 +2338,1222 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+          description: ''
+  /api/v1/impact-files/:
+    get:
+      operationId: impact_files_list
+      parameters:
+      - in: query
+        name: category
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - impact-files
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedImpactFileList'
+          description: ''
+  /api/v1/impact-files/{slug}/:
+    get:
+      operationId: impact_files_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - impact-files
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImpactFileDetail'
+          description: ''
+  /api/v1/impact/rankings/:
+    get:
+      operationId: impact_rankings_retrieve
+      tags:
+      - impact
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/alert-rules/:
+    get:
+      operationId: intelligence_alert_rules_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/alert-rules/{id}/:
+    get:
+      operationId: intelligence_alert_rules_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    put:
+      operationId: intelligence_alert_rules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/alerts/:
+    get:
+      operationId: intelligence_alerts_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/alerts/{id}/read/:
+    post:
+      operationId: intelligence_alerts_read_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/aliases/:
+    get:
+      operationId: intelligence_aliases_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/aliases/{id}/review/:
+    post:
+      operationId: intelligence_aliases_review_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/article-locations/:
+    get:
+      operationId: intelligence_article_locations_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: intelligence_article_locations_create
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/briefings/:
+    get:
+      operationId: intelligence_briefings_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/briefings/{id}/:
+    get:
+      operationId: intelligence_briefings_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/briefings/{id}/telegram/:
+    post:
+      operationId: intelligence_briefings_telegram_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/briefings/generate/:
+    post:
+      operationId: intelligence_briefings_generate_create
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/clusters/:
+    get:
+      operationId: intelligence_clusters_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/clusters/{id}/:
+    get:
+      operationId: intelligence_clusters_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/clusters/{id}/merge/:
+    post:
+      operationId: intelligence_clusters_merge_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/clusters/{id}/split/:
+    post:
+      operationId: intelligence_clusters_split_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/desk/:
+    get:
+      operationId: intelligence_desk_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/desk/{ref}/:
+    get:
+      operationId: intelligence_desk_retrieve_2
+      parameters:
+      - in: path
+        name: ref
+        schema:
+          type: string
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/desk/{ref}/convert/:
+    post:
+      operationId: intelligence_desk_convert_create
+      parameters:
+      - in: path
+        name: ref
+        schema:
+          type: string
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/desk/{ref}/transition/:
+    post:
+      operationId: intelligence_desk_transition_create
+      parameters:
+      - in: path
+        name: ref
+        schema:
+          type: string
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/items/:
+    get:
+      operationId: intelligence_items_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/lgas/:
+    get:
+      operationId: intelligence_lgas_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/lgas/{slug}/:
+    get:
+      operationId: intelligence_lgas_retrieve_2
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/map/:
+    get:
+      operationId: intelligence_map_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/overview/:
+    get:
+      operationId: intelligence_overview_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/projects/{id}/:
+    get:
+      operationId: intelligence_projects_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/projects/{id}/evidence/:
+    get:
+      operationId: intelligence_projects_evidence_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: intelligence_projects_evidence_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/projects/{id}/milestone/:
+    post:
+      operationId: intelligence_projects_milestone_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/projects/{id}/status/:
+    post:
+      operationId: intelligence_projects_status_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/promise-candidates/:
+    get:
+      operationId: intelligence_promise_candidates_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/promise-candidates/{id}/:
+    get:
+      operationId: intelligence_promise_candidates_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/promise-candidates/{id}/confirm/:
+    post:
+      operationId: intelligence_promise_candidates_confirm_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/promise-candidates/{id}/dismiss/:
+    post:
+      operationId: intelligence_promise_candidates_dismiss_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/runs/:
+    get:
+      operationId: intelligence_runs_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/security/:
+    get:
+      operationId: intelligence_security_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/security/{ref}/:
+    get:
+      operationId: intelligence_security_retrieve_2
+      parameters:
+      - in: path
+        name: ref
+        schema:
+          type: string
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/security/{ref}/transition/:
+    post:
+      operationId: intelligence_security_transition_create
+      parameters:
+      - in: path
+        name: ref
+        schema:
+          type: string
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/security/incidents/:
+    get:
+      operationId: intelligence_security_incidents_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: intelligence_security_incidents_create
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/security/incidents/{id}/:
+    get:
+      operationId: intelligence_security_incidents_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/security/incidents/{id}/claim/:
+    post:
+      operationId: intelligence_security_incidents_claim_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/security/incidents/{id}/redact/:
+    post:
+      operationId: intelligence_security_incidents_redact_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/security/incidents/{id}/status/:
+    post:
+      operationId: intelligence_security_incidents_status_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/intelligence/sources/:
+    get:
+      operationId: intelligence_sources_retrieve
+      tags:
+      - intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: intelligence_sources_create
+      tags:
+      - intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
   /api/v1/leadership/:
     get:
@@ -2017,6 +3652,38 @@ paths:
                     type: string
                     nullable: true
                     format: uri
+          description: ''
+  /api/v1/lgas/news/:
+    get:
+      operationId: lga_news_index
+      tags:
+      - lgas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/lgas/news/{slug}/:
+    get:
+      operationId: lga_news_detail
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - lgas
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
   /api/v1/locations/lgas/:
     get:
@@ -3235,6 +4902,69 @@ paths:
               schema:
                 $ref: '#/components/schemas/Opportunity'
           description: ''
+  /api/v1/opportunities/{slug}/report/:
+    post:
+      operationId: opportunities_report_create
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - opportunities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpportunityReportInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OpportunityReportInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OpportunityReportInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/opportunities/archive/:
+    get:
+      operationId: opportunities_archive_list
+      description: |-
+        The public expired-opportunities archive: CLOSED listings only,
+        mirroring the web archive page.
+      parameters:
+      - in: query
+        name: category
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - opportunities
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOpportunityList'
+          description: ''
   /api/v1/outreach/:
     get:
       operationId: outreach_list
@@ -3810,6 +5540,132 @@ paths:
                 required:
                 - members
           description: ''
+  /api/v1/projects/:
+    get:
+      operationId: projects_list
+      parameters:
+      - in: query
+        name: institution
+        schema:
+          type: integer
+      - in: query
+        name: lga
+        schema:
+          type: integer
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: sector
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+      tags:
+      - projects
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjectList'
+          description: ''
+  /api/v1/projects/{id}/:
+    get:
+      operationId: projects_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetail'
+          description: ''
+  /api/v1/promises/:
+    get:
+      operationId: promises_list
+      parameters:
+      - in: query
+        name: institution
+        schema:
+          type: integer
+      - in: query
+        name: lga
+        schema:
+          type: integer
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: sector
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+      tags:
+      - promises
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPromiseList'
+          description: ''
+  /api/v1/promises/{id}/:
+    get:
+      operationId: promises_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - promises
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromiseDetail'
+          description: ''
   /api/v1/registration/vacant-roles/:
     get:
       operationId: registration_vacant_roles_retrieve
@@ -4080,6 +5936,328 @@ paths:
                     items:
                       type: object
                       additionalProperties: true
+          description: ''
+  /api/v1/signals/:
+    get:
+      operationId: signals_list
+      parameters:
+      - in: query
+        name: confidence
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: theme
+        schema:
+          type: string
+      tags:
+      - signals
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSignalList'
+          description: ''
+  /api/v1/signals/{slug}/:
+    get:
+      operationId: signals_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - signals
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalDetail'
+          description: ''
+  /api/v1/story-intelligence/promises/:
+    post:
+      operationId: story_intelligence_promises_create
+      tags:
+      - story-intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/story-intelligence/promises/{id}/desk/:
+    get:
+      operationId: story_intelligence_promises_desk_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - story-intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    patch:
+      operationId: story_intelligence_promises_desk_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - story-intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/story-intelligence/promises/{id}/status/:
+    post:
+      operationId: story_intelligence_promises_status_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - story-intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/story-intelligence/promises/{id}/updates/:
+    post:
+      operationId: story_intelligence_promises_updates_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - story-intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/story-intelligence/promises/desk/:
+    get:
+      operationId: story_intelligence_promises_desk_retrieve
+      tags:
+      - story-intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/story-intelligence/radar/:
+    get:
+      operationId: story_intelligence_radar_retrieve
+      tags:
+      - story-intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/story-intelligence/redact/:
+    post:
+      operationId: story_intelligence_redact_create
+      description: Emergency redaction (screen 194) — the web service, unchanged.
+      tags:
+      - story-intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/story-intelligence/stories/{id}/desk/:
+    get:
+      operationId: story_intelligence_stories_desk_retrieve
+      description: 'Story verification desk (screen 192): GET the desk, POST actions.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - story-intelligence
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: story_intelligence_stories_desk_create
+      description: 'Story verification desk (screen 192): GET the desk, POST actions.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - story-intelligence
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
   /api/v1/telegram/disconnect/:
     post:
@@ -4429,6 +6607,7 @@ components:
             Who should receive this announcement
 
             * `GENERAL` - General - All KPN Members
+            * `STATE` - State - State Executive Team
             * `ZONAL` - Zonal - Specific Zone
             * `LGA` - LGA - Specific LGA
             * `WARD` - Ward - Specific Ward
@@ -4543,11 +6722,29 @@ components:
           type: string
           description: Short summary for search engines (max 160 characters)
           maxLength: 160
+        story_id:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Permanent KPN Story ID (assigned at publication)
+        source_name:
+          type: string
+          description: Original publisher (e.g. Punch, Independent NG)
+          maxLength: 200
+        source_url:
+          description: Link to the original story
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
       required:
       - id
       - rejection_note
       - slug
       - status
+      - story_id
       - title
     AuditReport:
       type: object
@@ -4596,6 +6793,7 @@ components:
           nullable: true
         review_notes:
           type: string
+          readOnly: true
           description: Notes from the reviewer
         created_at:
           type: string
@@ -4617,6 +6815,7 @@ components:
       - findings
       - id
       - recommendations
+      - review_notes
       - reviewed_at
       - reviewed_by
       - status
@@ -4703,8 +6902,9 @@ components:
           maxLength: 160
         views:
           type: integer
-          maximum: 2147483647
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
         read_time:
           type: integer
           readOnly: true
@@ -4714,6 +6914,23 @@ components:
           nullable: true
         status:
           $ref: '#/components/schemas/ArticleStatusEnum'
+        story_id:
+          type: string
+          nullable: true
+          description: Permanent KPN Story ID (assigned at publication)
+          maxLength: 20
+        source_name:
+          type: string
+          description: Original publisher (e.g. Punch, Independent NG)
+          maxLength: 200
+        source_url:
+          description: Link to the original story
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
       required:
       - author_name
       - category_label
@@ -4725,6 +6942,38 @@ components:
       - title
       - verification_status_label
       - ward_name
+    Category0d5Enum:
+      enum:
+      - ROAD
+      - BRIDGE
+      - SCHOOL
+      - HOSPITAL
+      - HEALTH_FACILITY
+      - WATER
+      - DRAINAGE
+      - ELECTRICITY
+      - PUBLIC_BUILDING
+      - AGRICULTURE
+      - IRRIGATION
+      - MARKET
+      - YOUTH_FACILITY
+      - OTHER
+      type: string
+      description: |-
+        * `ROAD` - Road
+        * `BRIDGE` - Bridge
+        * `SCHOOL` - School
+        * `HOSPITAL` - Hospital
+        * `HEALTH_FACILITY` - Primary healthcare centre
+        * `WATER` - Water project
+        * `DRAINAGE` - Drainage system
+        * `ELECTRICITY` - Electricity project
+        * `PUBLIC_BUILDING` - Public building
+        * `AGRICULTURE` - Agricultural facility
+        * `IRRIGATION` - Irrigation project
+        * `MARKET` - Market
+        * `YOUTH_FACILITY` - Youth development facility
+        * `OTHER` - Other public infrastructure
     CommunityCategoryEnum:
       enum:
       - WELFARE
@@ -4756,16 +7005,54 @@ components:
         status_label:
           type: string
           readOnly: true
+        public_status_label:
+          type: string
+          readOnly: true
         description:
           type: string
+        objective:
+          type: string
+          description: What this initiative sets out to achieve
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        responsible_team:
+          type: string
+          description: Responsible KPN team (e.g. Jega LGA Chapter)
+          maxLength: 200
+        results:
+          type: string
+          description: Documented results, shown for completed initiatives
         location_text:
           type: string
           description: E.g., Birnin Kebbi Central Market
           maxLength: 200
+        lga:
+          type: integer
+          nullable: true
+          description: Kebbi LGA the initiative is based in, if it has one
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+          description: Ward the initiative is based in, if it has one
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
         people_reached:
           type: integer
-          maximum: 2147483647
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
         image:
           type: string
           format: uri
@@ -4784,10 +7071,13 @@ components:
       - created_at
       - description
       - id
+      - lga_name
       - location_text
+      - public_status_label
       - status_label
       - title
       - updated_at
+      - ward_name
     CommunityReport:
       type: object
       properties:
@@ -4926,11 +7216,15 @@ components:
       - PLANNING
       - ACTIVE
       - COMPLETED
+      - PAUSED
+      - CANCELLED
       type: string
       description: |-
         * `PLANNING` - Planning
         * `ACTIVE` - Active
         * `COMPLETED` - Completed
+        * `PAUSED` - Paused
+        * `CANCELLED` - Cancelled
     DeviceRegistration:
       type: object
       properties:
@@ -5205,8 +7499,9 @@ components:
           type: string
         order:
           type: integer
-          maximum: 2147483647
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
         is_active:
           type: boolean
         created_at:
@@ -5291,6 +7586,260 @@ components:
         * `FLAGGED` - Flagged for Issues
         * `REJECTED` - Rejected
         * `ESCALATED` - Escalated to Next Level
+    ImpactFile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 350
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          maxLength: 300
+        subheadline:
+          type: string
+          description: Short deck/subheadline that appears below the main headline
+          maxLength: 500
+        category:
+          $ref: '#/components/schemas/NewsCategoryEnum'
+        category_label:
+          type: string
+          readOnly: true
+        location:
+          type: string
+          description: Specific community or location (e.g. Birnin Kebbi)
+          maxLength: 200
+        lga:
+          type: integer
+          nullable: true
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        verification_status_label:
+          type: string
+          readOnly: true
+        reporter_credit:
+          $ref: '#/components/schemas/ReporterCreditEnum'
+        author_name:
+          type: string
+          readOnly: true
+        image:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        content:
+          type: string
+        content_json:
+          nullable: true
+          description: Block editor content stored as JSON
+        meta_description:
+          type: string
+          description: Short summary for search engines (max 160 characters)
+          maxLength: 160
+        views:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        read_time:
+          type: integer
+          readOnly: true
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ArticleStatusEnum'
+        story_id:
+          type: string
+          nullable: true
+          description: Permanent KPN Story ID (assigned at publication)
+          maxLength: 20
+        source_name:
+          type: string
+          description: Original publisher (e.g. Punch, Independent NG)
+          maxLength: 200
+        source_url:
+          description: Link to the original story
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        story_kind:
+          type: string
+          readOnly: true
+        impact_category:
+          type: string
+          readOnly: true
+        impact_category_label:
+          type: string
+          readOnly: true
+        update_count:
+          type: integer
+          readOnly: true
+      required:
+      - author_name
+      - category_label
+      - id
+      - image
+      - impact_category
+      - impact_category_label
+      - lga_name
+      - read_time
+      - slug
+      - story_kind
+      - title
+      - update_count
+      - verification_status_label
+      - ward_name
+    ImpactFileDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 350
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          maxLength: 300
+        subheadline:
+          type: string
+          description: Short deck/subheadline that appears below the main headline
+          maxLength: 500
+        category:
+          $ref: '#/components/schemas/NewsCategoryEnum'
+        category_label:
+          type: string
+          readOnly: true
+        location:
+          type: string
+          description: Specific community or location (e.g. Birnin Kebbi)
+          maxLength: 200
+        lga:
+          type: integer
+          nullable: true
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        verification_status_label:
+          type: string
+          readOnly: true
+        reporter_credit:
+          $ref: '#/components/schemas/ReporterCreditEnum'
+        author_name:
+          type: string
+          readOnly: true
+        image:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        content:
+          type: string
+        content_json:
+          nullable: true
+          description: Block editor content stored as JSON
+        meta_description:
+          type: string
+          description: Short summary for search engines (max 160 characters)
+          maxLength: 160
+        views:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        read_time:
+          type: integer
+          readOnly: true
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ArticleStatusEnum'
+        story_id:
+          type: string
+          nullable: true
+          description: Permanent KPN Story ID (assigned at publication)
+          maxLength: 20
+        source_name:
+          type: string
+          description: Original publisher (e.g. Punch, Independent NG)
+          maxLength: 200
+        source_url:
+          description: Link to the original story
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        story_kind:
+          type: string
+          readOnly: true
+        impact_category:
+          type: string
+          readOnly: true
+        impact_category_label:
+          type: string
+          readOnly: true
+        update_count:
+          type: integer
+          readOnly: true
+        story_file:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        six_parts:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - author_name
+      - category_label
+      - id
+      - image
+      - impact_category
+      - impact_category_label
+      - lga_name
+      - read_time
+      - six_parts
+      - slug
+      - story_file
+      - story_kind
+      - title
+      - update_count
+      - verification_status_label
+      - ward_name
     InfoStatusEnum:
       enum:
       - VERIFIED
@@ -5440,7 +7989,6 @@ components:
         role_title:
           type: string
           readOnly: true
-          nullable: true
         zone:
           type: integer
           readOnly: true
@@ -5658,6 +8206,10 @@ components:
           readOnly: true
         organization:
           type: string
+        provider:
+          type: string
+          description: Who is providing this? (e.g. Federal Govt, NGO, Private Sector)
+          maxLength: 200
         description:
           type: string
         requirements:
@@ -5670,6 +8222,32 @@ components:
           type: string
           format: date
           nullable: true
+        opens_at:
+          type: string
+          format: date
+          nullable: true
+          description: Date applications open, if announced
+        location_text:
+          type: string
+          description: Where the opportunity is based or takes place
+          maxLength: 200
+        lga:
+          type: integer
+          nullable: true
+          description: Kebbi LGA the opportunity is tied to, if any
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        nigerians_eligible:
+          type: boolean
+          nullable: true
+          description: Tick if Nigerians are eligible; leave unset if not stated
+        verification_source:
+          type: string
+          description: Official source this listing was checked against (recorded
+            at verification)
+          maxLength: 300
         status:
           $ref: '#/components/schemas/OpportunityStatusEnum'
         status_label:
@@ -5679,11 +8257,11 @@ components:
           type: boolean
           description: Feature this opportunity on the homepage/hub top
         external_apply_link:
-          oneOf:
-          - type: string
-            format: uri
-          - type: string
-            maxLength: 0
+          type: string
+          readOnly: true
+        application_link:
+          type: string
+          readOnly: true
         created_at:
           type: string
           format: date-time
@@ -5693,12 +8271,15 @@ components:
           format: date-time
           readOnly: true
       required:
+      - application_link
       - category_label
       - created_at
       - description
       - external_apply_link
       - id
+      - lga_name
       - organization
+      - provider
       - slug
       - status_label
       - title
@@ -5725,16 +8306,41 @@ components:
         * `TRAINING` - Skills & Training
         * `EMPOWERMENT` - Empowerment Programs
         * `FELLOWSHIP` - Fellowships & Leadership
+    OpportunityReportInput:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 5000
+        details:
+          type: string
+          maxLength: 5000
+        contact:
+          type: string
+          maxLength: 200
+        reporter_contact:
+          type: string
+          maxLength: 200
+        reporter_name:
+          type: string
+          maxLength: 120
+        name:
+          type: string
+          maxLength: 120
+      required:
+      - reason
     OpportunityStatusEnum:
       enum:
       - OPEN
       - CLOSING_SOON
       - CLOSED
+      - VERIFICATION_PENDING
       type: string
       description: |-
         * `OPEN` - Open & Accepting Applications
         * `CLOSING_SOON` - Closing Soon
         * `CLOSED` - Closed
+        * `VERIFICATION_PENDING` - Verification Pending
     Outreach:
       type: object
       properties:
@@ -6068,6 +8674,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FinancialReport'
+    PaginatedImpactFileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImpactFile'
     PaginatedMediaItemList:
       type: object
       required:
@@ -6160,6 +8789,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Notification'
+    PaginatedOpportunityList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Opportunity'
     PaginatedOutreachList:
       type: object
       required:
@@ -6183,6 +8835,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Outreach'
+    PaginatedProjectList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+    PaginatedPromiseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Promise'
     PaginatedReportList:
       type: object
       required:
@@ -6206,6 +8904,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Report'
+    PaginatedSignalList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Signal'
     PaginatedUserList:
       type: object
       required:
@@ -6334,6 +9055,7 @@ components:
             Who should receive this announcement
 
             * `GENERAL` - General - All KPN Members
+            * `STATE` - State - State Executive Team
             * `ZONAL` - Zonal - Specific Zone
             * `LGA` - LGA - Specific LGA
             * `WARD` - Ward - Specific Ward
@@ -6426,6 +9148,23 @@ components:
           type: string
           description: Short summary for search engines (max 160 characters)
           maxLength: 160
+        story_id:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Permanent KPN Story ID (assigned at publication)
+        source_name:
+          type: string
+          description: Original publisher (e.g. Punch, Independent NG)
+          maxLength: 200
+        source_url:
+          description: Link to the original story
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
     PatchedAuditReport:
       type: object
       properties:
@@ -6473,6 +9212,7 @@ components:
           nullable: true
         review_notes:
           type: string
+          readOnly: true
           description: Notes from the reviewer
         created_at:
           type: string
@@ -6507,16 +9247,54 @@ components:
         status_label:
           type: string
           readOnly: true
+        public_status_label:
+          type: string
+          readOnly: true
         description:
           type: string
+        objective:
+          type: string
+          description: What this initiative sets out to achieve
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        responsible_team:
+          type: string
+          description: Responsible KPN team (e.g. Jega LGA Chapter)
+          maxLength: 200
+        results:
+          type: string
+          description: Documented results, shown for completed initiatives
         location_text:
           type: string
           description: E.g., Birnin Kebbi Central Market
           maxLength: 200
+        lga:
+          type: integer
+          nullable: true
+          description: Kebbi LGA the initiative is based in, if it has one
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+          description: Ward the initiative is based in, if it has one
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
         people_reached:
           type: integer
-          maximum: 2147483647
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
         image:
           type: string
           format: uri
@@ -6646,8 +9424,9 @@ components:
           type: string
         order:
           type: integer
-          maximum: 2147483647
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
         is_active:
           type: boolean
         created_at:
@@ -6735,6 +9514,10 @@ components:
           readOnly: true
         organization:
           type: string
+        provider:
+          type: string
+          description: Who is providing this? (e.g. Federal Govt, NGO, Private Sector)
+          maxLength: 200
         description:
           type: string
         requirements:
@@ -6747,6 +9530,32 @@ components:
           type: string
           format: date
           nullable: true
+        opens_at:
+          type: string
+          format: date
+          nullable: true
+          description: Date applications open, if announced
+        location_text:
+          type: string
+          description: Where the opportunity is based or takes place
+          maxLength: 200
+        lga:
+          type: integer
+          nullable: true
+          description: Kebbi LGA the opportunity is tied to, if any
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        nigerians_eligible:
+          type: boolean
+          nullable: true
+          description: Tick if Nigerians are eligible; leave unset if not stated
+        verification_source:
+          type: string
+          description: Official source this listing was checked against (recorded
+            at verification)
+          maxLength: 300
         status:
           $ref: '#/components/schemas/OpportunityStatusEnum'
         status_label:
@@ -6756,11 +9565,11 @@ components:
           type: boolean
           description: Feature this opportunity on the homepage/hub top
         external_apply_link:
-          oneOf:
-          - type: string
-            format: uri
-          - type: string
-            maxLength: 0
+          type: string
+          readOnly: true
+        application_link:
+          type: string
+          readOnly: true
         created_at:
           type: string
           format: date-time
@@ -6856,8 +9665,9 @@ components:
           type: boolean
         order:
           type: integer
-          maximum: 2147483647
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
           description: Display order (lower = higher)
     PatchedProfile:
       type: object
@@ -7020,8 +9830,9 @@ components:
           type: integer
         target_beneficiaries:
           type: integer
-          maximum: 2147483647
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
           description: Expected number of beneficiaries
         budget:
           type: string
@@ -7184,8 +9995,9 @@ components:
           type: boolean
         order:
           type: integer
-          maximum: 2147483647
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
           description: Display order (lower = higher)
       required:
       - full_name
@@ -7319,6 +10131,665 @@ components:
         * `ONGOING` - Ongoing
         * `COMPLETED` - Completed
         * `CANCELLED` - Cancelled
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        project_code:
+          type: string
+          readOnly: true
+          description: Permanent public reference, allocated at registration (KPN-PRJ-YYYY-NNNNN).
+        title:
+          type: string
+          maxLength: 300
+        description:
+          type: string
+        sector:
+          type: string
+          description: Thematic sector, using the Promise Tracker vocabulary. Leave
+            blank until the project can be classified honestly.
+          maxLength: 20
+        sector_label:
+          type: string
+          readOnly: true
+        category:
+          $ref: '#/components/schemas/Category0d5Enum'
+        category_label:
+          type: string
+          readOnly: true
+        institution:
+          type: integer
+          nullable: true
+          description: The ministry, agency or authority responsible for the project.
+        institution_name:
+          type: string
+          readOnly: true
+          nullable: true
+        lga:
+          type: integer
+          nullable: true
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
+        district:
+          type: integer
+          nullable: true
+        district_name:
+          type: string
+          readOnly: true
+          nullable: true
+        community:
+          type: integer
+          nullable: true
+        community_name:
+          type: string
+          readOnly: true
+          nullable: true
+        location_label:
+          type: string
+          readOnly: true
+        contractor_name:
+          type: string
+          description: Only when publicly documented. Leave blank otherwise.
+          maxLength: 200
+        contract_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+          nullable: true
+          description: Only when documented in a source. Never estimated.
+        contract_amount_display:
+          type: string
+          readOnly: true
+        award_date:
+          type: string
+          format: date
+          nullable: true
+          description: Only when documented.
+        commencement_date:
+          type: string
+          format: date
+          nullable: true
+          description: Only when documented.
+        expected_completion_date:
+          type: string
+          format: date
+          nullable: true
+          description: The completion date the responsible authority announced. Leave
+            blank if none was announced.
+        status:
+          $ref: '#/components/schemas/Status3a5Enum'
+        status_label:
+          type: string
+          readOnly: true
+        source_url:
+          description: The original announcement or source document, where public.
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        stories:
+          type: array
+          items: {}
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category_label
+      - community_name
+      - contract_amount_display
+      - created_at
+      - district_name
+      - id
+      - institution_name
+      - lga_name
+      - location_label
+      - project_code
+      - sector_label
+      - status_label
+      - stories
+      - title
+      - updated_at
+      - ward_name
+    ProjectDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        project_code:
+          type: string
+          readOnly: true
+          description: Permanent public reference, allocated at registration (KPN-PRJ-YYYY-NNNNN).
+        title:
+          type: string
+          maxLength: 300
+        description:
+          type: string
+        sector:
+          type: string
+          description: Thematic sector, using the Promise Tracker vocabulary. Leave
+            blank until the project can be classified honestly.
+          maxLength: 20
+        sector_label:
+          type: string
+          readOnly: true
+        category:
+          $ref: '#/components/schemas/Category0d5Enum'
+        category_label:
+          type: string
+          readOnly: true
+        institution:
+          type: integer
+          nullable: true
+          description: The ministry, agency or authority responsible for the project.
+        institution_name:
+          type: string
+          readOnly: true
+          nullable: true
+        lga:
+          type: integer
+          nullable: true
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
+        district:
+          type: integer
+          nullable: true
+        district_name:
+          type: string
+          readOnly: true
+          nullable: true
+        community:
+          type: integer
+          nullable: true
+        community_name:
+          type: string
+          readOnly: true
+          nullable: true
+        location_label:
+          type: string
+          readOnly: true
+        contractor_name:
+          type: string
+          description: Only when publicly documented. Leave blank otherwise.
+          maxLength: 200
+        contract_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+          nullable: true
+          description: Only when documented in a source. Never estimated.
+        contract_amount_display:
+          type: string
+          readOnly: true
+        award_date:
+          type: string
+          format: date
+          nullable: true
+          description: Only when documented.
+        commencement_date:
+          type: string
+          format: date
+          nullable: true
+          description: Only when documented.
+        expected_completion_date:
+          type: string
+          format: date
+          nullable: true
+          description: The completion date the responsible authority announced. Leave
+            blank if none was announced.
+        status:
+          $ref: '#/components/schemas/Status3a5Enum'
+        status_label:
+          type: string
+          readOnly: true
+        source_url:
+          description: The original announcement or source document, where public.
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        stories:
+          type: array
+          items: {}
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        milestones:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectMilestone'
+          readOnly: true
+        evidence:
+          type: array
+          items: {}
+          readOnly: true
+      required:
+      - category_label
+      - community_name
+      - contract_amount_display
+      - created_at
+      - district_name
+      - evidence
+      - id
+      - institution_name
+      - lga_name
+      - location_label
+      - milestones
+      - project_code
+      - sector_label
+      - status_label
+      - stories
+      - title
+      - updated_at
+      - ward_name
+    ProjectMilestone:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date:
+          type: string
+          format: date
+        title:
+          type: string
+          maxLength: 250
+        body:
+          type: string
+        status_after:
+          description: |-
+            The project status after this entry (blank = unchanged).
+
+            * `ANNOUNCED` - Announced
+            * `AWARDED_DOCUMENTED` - Awarded — documented
+            * `NOT_STARTED` - Not yet started
+            * `IN_PROGRESS` - In progress
+            * `DELAYED` - Delayed
+            * `REPORTED_ABANDONED` - Reported abandoned
+            * `VERIFIED_ABANDONED` - Verified abandoned
+            * `COMPLETED_AWAITING` - Completed — awaiting verification
+            * `COMPLETED_VERIFIED` - Completed — verified
+            * `SUSPENDED` - Suspended
+            * `DISPUTED` - Disputed
+            * `UNKNOWN` - Unknown
+          oneOf:
+          - $ref: '#/components/schemas/StatusAfter3a5Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+        status_after_label:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - date
+      - id
+      - status_after_label
+      - title
+    Promise:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        public_code:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 250
+        description:
+          type: string
+          description: What exactly was promised.
+        institution:
+          type: integer
+        institution_name:
+          type: string
+          readOnly: true
+        institution_kind:
+          type: string
+          readOnly: true
+        announced_by:
+          type: string
+          description: Who announced it, e.g. "Governor Nasir Idris".
+          maxLength: 200
+        announced_on:
+          type: string
+          format: date
+        source_name:
+          type: string
+          maxLength: 200
+        source_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        deadline:
+          type: string
+          format: date
+          nullable: true
+          description: The date the institution promised completion by. Leave blank
+            if no date was announced.
+        status:
+          $ref: '#/components/schemas/Status87cEnum'
+        status_label:
+          type: string
+          readOnly: true
+        sector:
+          description: |-
+            Thematic sector for the public tracker. Leave blank until the promise can be classified honestly.
+
+            * `INFRASTRUCTURE` - Infrastructure
+            * `EDUCATION` - Education
+            * `HEALTH` - Health
+            * `AGRICULTURE` - Agriculture
+            * `WATER` - Water & Sanitation
+            * `SECURITY` - Security
+            * `ECONOMY` - Economy & Markets
+            * `SOCIAL_WELFARE` - Social Welfare
+            * `ENVIRONMENT` - Environment
+            * `GOVERNANCE` - Governance
+            * `YOUTH` - Youth & Sports
+            * `OTHER` - Other
+          oneOf:
+          - $ref: '#/components/schemas/SectorEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        sector_label:
+          type: string
+          readOnly: true
+        image:
+          type: string
+          readOnly: true
+        zone:
+          type: integer
+          nullable: true
+        zone_name:
+          type: string
+          readOnly: true
+          nullable: true
+        lga:
+          type: integer
+          nullable: true
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
+        location_label:
+          type: string
+          readOnly: true
+        is_delayed:
+          type: boolean
+          readOnly: true
+        stories:
+          type: array
+          items: {}
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - announced_on
+      - created_at
+      - description
+      - id
+      - image
+      - institution
+      - institution_kind
+      - institution_name
+      - is_delayed
+      - lga_name
+      - location_label
+      - public_code
+      - sector_label
+      - status_label
+      - stories
+      - title
+      - updated_at
+      - ward_name
+      - zone_name
+    PromiseDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        public_code:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 250
+        description:
+          type: string
+          description: What exactly was promised.
+        institution:
+          type: integer
+        institution_name:
+          type: string
+          readOnly: true
+        institution_kind:
+          type: string
+          readOnly: true
+        announced_by:
+          type: string
+          description: Who announced it, e.g. "Governor Nasir Idris".
+          maxLength: 200
+        announced_on:
+          type: string
+          format: date
+        source_name:
+          type: string
+          maxLength: 200
+        source_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        deadline:
+          type: string
+          format: date
+          nullable: true
+          description: The date the institution promised completion by. Leave blank
+            if no date was announced.
+        status:
+          $ref: '#/components/schemas/Status87cEnum'
+        status_label:
+          type: string
+          readOnly: true
+        sector:
+          description: |-
+            Thematic sector for the public tracker. Leave blank until the promise can be classified honestly.
+
+            * `INFRASTRUCTURE` - Infrastructure
+            * `EDUCATION` - Education
+            * `HEALTH` - Health
+            * `AGRICULTURE` - Agriculture
+            * `WATER` - Water & Sanitation
+            * `SECURITY` - Security
+            * `ECONOMY` - Economy & Markets
+            * `SOCIAL_WELFARE` - Social Welfare
+            * `ENVIRONMENT` - Environment
+            * `GOVERNANCE` - Governance
+            * `YOUTH` - Youth & Sports
+            * `OTHER` - Other
+          oneOf:
+          - $ref: '#/components/schemas/SectorEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        sector_label:
+          type: string
+          readOnly: true
+        image:
+          type: string
+          readOnly: true
+        zone:
+          type: integer
+          nullable: true
+        zone_name:
+          type: string
+          readOnly: true
+          nullable: true
+        lga:
+          type: integer
+          nullable: true
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
+        location_label:
+          type: string
+          readOnly: true
+        is_delayed:
+          type: boolean
+          readOnly: true
+        stories:
+          type: array
+          items: {}
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromiseUpdate'
+          readOnly: true
+      required:
+      - announced_on
+      - created_at
+      - description
+      - id
+      - image
+      - institution
+      - institution_kind
+      - institution_name
+      - is_delayed
+      - lga_name
+      - location_label
+      - public_code
+      - sector_label
+      - status_label
+      - stories
+      - title
+      - updated_at
+      - updates
+      - ward_name
+      - zone_name
+    PromiseUpdate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        update_date:
+          type: string
+          format: date
+        title:
+          type: string
+          maxLength: 250
+        body:
+          type: string
+        status_after:
+          description: |-
+            The promise status after this update (blank = unchanged).
+
+            * `ANNOUNCED` - Announced
+            * `DOCUMENTED` - Documented
+            * `IN_PROGRESS` - In progress
+            * `COMPLETED_VERIFIED` - Completed — verified
+            * `DELAYED` - Delayed
+            * `DISPUTED` - Disputed
+          oneOf:
+          - $ref: '#/components/schemas/StatusAfter87cEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        status_after_label:
+          type: string
+          readOnly: true
+        evidence_title:
+          type: string
+          maxLength: 200
+        evidence_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - status_after_label
+      - title
+      - update_date
     Report:
       type: object
       properties:
@@ -7499,15 +10970,416 @@ components:
     ScopeEnum:
       enum:
       - GENERAL
+      - STATE
       - ZONAL
       - LGA
       - WARD
       type: string
       description: |-
         * `GENERAL` - General - All KPN Members
+        * `STATE` - State - State Executive Team
         * `ZONAL` - Zonal - Specific Zone
         * `LGA` - LGA - Specific LGA
         * `WARD` - Ward - Specific Ward
+    SectorEnum:
+      enum:
+      - INFRASTRUCTURE
+      - EDUCATION
+      - HEALTH
+      - AGRICULTURE
+      - WATER
+      - SECURITY
+      - ECONOMY
+      - SOCIAL_WELFARE
+      - ENVIRONMENT
+      - GOVERNANCE
+      - YOUTH
+      - OTHER
+      type: string
+      description: |-
+        * `INFRASTRUCTURE` - Infrastructure
+        * `EDUCATION` - Education
+        * `HEALTH` - Health
+        * `AGRICULTURE` - Agriculture
+        * `WATER` - Water & Sanitation
+        * `SECURITY` - Security
+        * `ECONOMY` - Economy & Markets
+        * `SOCIAL_WELFARE` - Social Welfare
+        * `ENVIRONMENT` - Environment
+        * `GOVERNANCE` - Governance
+        * `YOUTH` - Youth & Sports
+        * `OTHER` - Other
+    Signal:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 350
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          maxLength: 300
+        subheadline:
+          type: string
+          description: Short deck/subheadline that appears below the main headline
+          maxLength: 500
+        category:
+          $ref: '#/components/schemas/NewsCategoryEnum'
+        category_label:
+          type: string
+          readOnly: true
+        location:
+          type: string
+          description: Specific community or location (e.g. Birnin Kebbi)
+          maxLength: 200
+        lga:
+          type: integer
+          nullable: true
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        verification_status_label:
+          type: string
+          readOnly: true
+        reporter_credit:
+          $ref: '#/components/schemas/ReporterCreditEnum'
+        author_name:
+          type: string
+          readOnly: true
+        image:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        content:
+          type: string
+        content_json:
+          nullable: true
+          description: Block editor content stored as JSON
+        meta_description:
+          type: string
+          description: Short summary for search engines (max 160 characters)
+          maxLength: 160
+        views:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        read_time:
+          type: integer
+          readOnly: true
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ArticleStatusEnum'
+        story_id:
+          type: string
+          nullable: true
+          description: Permanent KPN Story ID (assigned at publication)
+          maxLength: 20
+        source_name:
+          type: string
+          description: Original publisher (e.g. Punch, Independent NG)
+          maxLength: 200
+        source_url:
+          description: Link to the original story
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        story_kind:
+          type: string
+          readOnly: true
+        signal_category:
+          type: string
+          readOnly: true
+        signal_category_label:
+          type: string
+          readOnly: true
+        signal_confidence:
+          type: string
+          readOnly: true
+        signal_confidence_label:
+          type: string
+          readOnly: true
+        signal_observation:
+          type: string
+          readOnly: true
+        signal_horizon:
+          type: string
+          readOnly: true
+      required:
+      - author_name
+      - category_label
+      - id
+      - image
+      - lga_name
+      - read_time
+      - signal_category
+      - signal_category_label
+      - signal_confidence
+      - signal_confidence_label
+      - signal_horizon
+      - signal_observation
+      - slug
+      - story_kind
+      - title
+      - verification_status_label
+      - ward_name
+    SignalDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 350
+          pattern: ^[-a-zA-Z0-9_]+$
+        title:
+          type: string
+          maxLength: 300
+        subheadline:
+          type: string
+          description: Short deck/subheadline that appears below the main headline
+          maxLength: 500
+        category:
+          $ref: '#/components/schemas/NewsCategoryEnum'
+        category_label:
+          type: string
+          readOnly: true
+        location:
+          type: string
+          description: Specific community or location (e.g. Birnin Kebbi)
+          maxLength: 200
+        lga:
+          type: integer
+          nullable: true
+        lga_name:
+          type: string
+          readOnly: true
+          nullable: true
+        ward:
+          type: integer
+          nullable: true
+        ward_name:
+          type: string
+          readOnly: true
+          nullable: true
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        verification_status_label:
+          type: string
+          readOnly: true
+        reporter_credit:
+          $ref: '#/components/schemas/ReporterCreditEnum'
+        author_name:
+          type: string
+          readOnly: true
+        image:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+        content:
+          type: string
+        content_json:
+          nullable: true
+          description: Block editor content stored as JSON
+        meta_description:
+          type: string
+          description: Short summary for search engines (max 160 characters)
+          maxLength: 160
+        views:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        read_time:
+          type: integer
+          readOnly: true
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ArticleStatusEnum'
+        story_id:
+          type: string
+          nullable: true
+          description: Permanent KPN Story ID (assigned at publication)
+          maxLength: 20
+        source_name:
+          type: string
+          description: Original publisher (e.g. Punch, Independent NG)
+          maxLength: 200
+        source_url:
+          description: Link to the original story
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 500
+          - type: string
+            maxLength: 0
+        story_kind:
+          type: string
+          readOnly: true
+        signal_category:
+          type: string
+          readOnly: true
+        signal_category_label:
+          type: string
+          readOnly: true
+        signal_confidence:
+          type: string
+          readOnly: true
+        signal_confidence_label:
+          type: string
+          readOnly: true
+        signal_observation:
+          type: string
+          readOnly: true
+        signal_horizon:
+          type: string
+          readOnly: true
+        story_file:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        claim_groups:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        questions:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - author_name
+      - category_label
+      - claim_groups
+      - id
+      - image
+      - lga_name
+      - questions
+      - read_time
+      - signal_category
+      - signal_category_label
+      - signal_confidence
+      - signal_confidence_label
+      - signal_horizon
+      - signal_observation
+      - slug
+      - story_file
+      - story_kind
+      - title
+      - verification_status_label
+      - ward_name
+    Status3a5Enum:
+      enum:
+      - ANNOUNCED
+      - AWARDED_DOCUMENTED
+      - NOT_STARTED
+      - IN_PROGRESS
+      - DELAYED
+      - REPORTED_ABANDONED
+      - VERIFIED_ABANDONED
+      - COMPLETED_AWAITING
+      - COMPLETED_VERIFIED
+      - SUSPENDED
+      - DISPUTED
+      - UNKNOWN
+      type: string
+      description: |-
+        * `ANNOUNCED` - Announced
+        * `AWARDED_DOCUMENTED` - Awarded — documented
+        * `NOT_STARTED` - Not yet started
+        * `IN_PROGRESS` - In progress
+        * `DELAYED` - Delayed
+        * `REPORTED_ABANDONED` - Reported abandoned
+        * `VERIFIED_ABANDONED` - Verified abandoned
+        * `COMPLETED_AWAITING` - Completed — awaiting verification
+        * `COMPLETED_VERIFIED` - Completed — verified
+        * `SUSPENDED` - Suspended
+        * `DISPUTED` - Disputed
+        * `UNKNOWN` - Unknown
+    Status87cEnum:
+      enum:
+      - ANNOUNCED
+      - DOCUMENTED
+      - IN_PROGRESS
+      - COMPLETED_VERIFIED
+      - DELAYED
+      - DISPUTED
+      type: string
+      description: |-
+        * `ANNOUNCED` - Announced
+        * `DOCUMENTED` - Documented
+        * `IN_PROGRESS` - In progress
+        * `COMPLETED_VERIFIED` - Completed — verified
+        * `DELAYED` - Delayed
+        * `DISPUTED` - Disputed
+    StatusAfter3a5Enum:
+      enum:
+      - ANNOUNCED
+      - AWARDED_DOCUMENTED
+      - NOT_STARTED
+      - IN_PROGRESS
+      - DELAYED
+      - REPORTED_ABANDONED
+      - VERIFIED_ABANDONED
+      - COMPLETED_AWAITING
+      - COMPLETED_VERIFIED
+      - SUSPENDED
+      - DISPUTED
+      - UNKNOWN
+      type: string
+      description: |-
+        * `ANNOUNCED` - Announced
+        * `AWARDED_DOCUMENTED` - Awarded — documented
+        * `NOT_STARTED` - Not yet started
+        * `IN_PROGRESS` - In progress
+        * `DELAYED` - Delayed
+        * `REPORTED_ABANDONED` - Reported abandoned
+        * `VERIFIED_ABANDONED` - Verified abandoned
+        * `COMPLETED_AWAITING` - Completed — awaiting verification
+        * `COMPLETED_VERIFIED` - Completed — verified
+        * `SUSPENDED` - Suspended
+        * `DISPUTED` - Disputed
+        * `UNKNOWN` - Unknown
+    StatusAfter87cEnum:
+      enum:
+      - ANNOUNCED
+      - DOCUMENTED
+      - IN_PROGRESS
+      - COMPLETED_VERIFIED
+      - DELAYED
+      - DISPUTED
+      type: string
+      description: |-
+        * `ANNOUNCED` - Announced
+        * `DOCUMENTED` - Documented
+        * `IN_PROGRESS` - In progress
+        * `COMPLETED_VERIFIED` - Completed — verified
+        * `DELAYED` - Delayed
+        * `DISPUTED` - Disputed
     TelegramMembership:
       type: object
       properties:
@@ -7607,7 +11479,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/RoleEnum'
           readOnly: true
-          default: GENERAL
         tier:
           type: string
           readOnly: true
@@ -7651,7 +11522,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/MembershipStatusEnum'
           readOnly: true
-          default: PENDING
         reporter_level:
           allOf:
           - $ref: '#/components/schemas/ReporterLevelEnum'
@@ -7840,8 +11710,9 @@ components:
           type: integer
         target_beneficiaries:
           type: integer
-          maximum: 2147483647
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
           description: Expected number of beneficiaries
         budget:
           type: string

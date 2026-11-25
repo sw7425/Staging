@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Record a Promise — KPN Promise Desk{% endblock %}
+{% block content %}
+<div>
+  <div class="kpn-page" style="max-width:48rem">
+    <section class="kpn-card p-6">
+      <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">KPN Promise Desk</p>
+      <h1 class="kpn-h2 text-gray-900 dark:text-white mb-2">Record a public promise</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        Record the promise exactly as it was announced, with the source. Leave the promised
+        completion date blank if the institution did not announce one — never estimate it.
+        The promise starts with status <strong>Announced</strong>.
+      </p>
+      <form method="POST" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        {% if form.instance.image %}
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Current tracker image:</p>
+          <img src="{{ form.instance.image.url }}" alt="{{ form.instance.title }}" class="rounded-lg border border-gray-200 dark:border-gray-700" style="max-width:320px; width:100%; height:auto;">
+        </div>
+        {% endif %}
+        {{ form.as_p }}
+        <button type="submit" class="px-5 py-2.5 bg-kpn-green text-white rounded-lg font-semibold hover:bg-green-700 transition">Record promise</button>
+        <a href="{% url 'story_intelligence:promise_desk' %}" class="ml-3 text-sm text-gray-500 hover:underline">Cancel</a>
+      </form>
+    </section>
+  </div>
+</div>
+{% endblock %}

@@ -24,35 +24,79 @@ class CampaignSerializer(serializers.ModelSerializer):
         model = Campaign
         fields = ['id','slug','title','subheadline','category','category_label','location','lga','lga_name',
                   'ward','ward_name','verification_status','verification_status_label','reporter_credit',
-                  'author_name','image','content','content_json','meta_description','views','read_time','published_at','status']
+                  'author_name','image','content','content_json','meta_description','views','read_time','published_at','status',
+                  'story_id','source_name','source_url']
 
     def get_read_time(self, obj) -> int:
         return obj.get_read_time()
 
 class OpportunitySerializer(serializers.ModelSerializer):
     organization = serializers.CharField(source='provider')
-    external_apply_link = serializers.URLField(source='application_link', allow_blank=True)
+    # Priority 1 web rule, mirrored: while a listing is
+    # VERIFICATION_PENDING its application link is never handed out.
+    external_apply_link = serializers.SerializerMethodField()
+    application_link = serializers.SerializerMethodField()
     category_label = serializers.CharField(source='get_category_display', read_only=True)
     status_label = serializers.CharField(source='get_status_display', read_only=True)
+    lga_name = serializers.CharField(source='lga.name', allow_null=True, read_only=True)
 
     class Meta:
         model = Opportunity
-        fields = ['id','slug','title','category','category_label','organization','description','requirements',
-                  'benefits','deadline','status','status_label','is_featured','external_apply_link','created_at','updated_at']
+        fields = ['id','slug','title','category','category_label','organization','provider','description','requirements',
+                  'benefits','deadline','opens_at','location_text','lga','lga_name','nigerians_eligible',
+                  'verification_source','status','status_label','is_featured','external_apply_link',
+                  'application_link','created_at','updated_at']
+
+    def _visible_application_link(self, obj) -> str:
+        if obj.status == 'VERIFICATION_PENDING':
+            return ''
+        return obj.application_link or ''
+
+    def get_external_apply_link(self, obj) -> str:
+        return self._visible_application_link(obj)
+
+    def get_application_link(self, obj) -> str:
+        return self._visible_application_link(obj)
 
 class CommunityInitiativeSerializer(serializers.ModelSerializer):
     category_label = serializers.CharField(source='get_category_display', read_only=True)
     status_label = serializers.CharField(source='get_status_display', read_only=True)
+    # Public presentation label (Priority 2): PLANNING reads "Planned"
+    # on public surfaces; the stored value and staff label stay as-is.
+    public_status_label = serializers.SerializerMethodField()
+    lga_name = serializers.CharField(source='lga.name', allow_null=True, read_only=True)
+    ward_name = serializers.CharField(source='ward.name', allow_null=True, read_only=True)
     class Meta:
         model = CommunityInitiative
-        fields = ['id','title','category','category_label','status','status_label','description','location_text',
+        fields = ['id','title','category','category_label','status','status_label','public_status_label',
+                  'description','objective','start_date','end_date','responsible_team','results',
+                  'location_text','lga','lga_name','ward','ward_name',
                   'people_reached','image','created_at','updated_at']
 
+    def get_public_status_label(self, obj) -> str:
+        return CommunityInitiative.PUBLIC_STATUS_LABELS.get(obj.status, obj.get_status_display())
+
 class AdvocacyCampaignSerializer(serializers.ModelSerializer):
+    # Round 2 (screen 45): mirror the web advocacy detail page
+    # (core.views.advocacy_detail) — objective, proposed action, the
+    # lifecycle status with its label, and the evidence articles,
+    # PUBLISHED only exactly as the web page filters them, each with
+    # its Story ID.
+    status_label = serializers.CharField(source='get_status_display', read_only=True)
+    evidence_articles = serializers.SerializerMethodField()
+
     class Meta:
         model = AdvocacyCampaign
         fields = ['id','title','issue','background','kpn_position','actions_taken','government_response',
-                  'outcome','is_active','image','created_at','updated_at']
+                  'outcome','is_active','image','created_at','updated_at',
+                  'objective','proposed_action','affected_communities','responsible_team',
+                  'status','status_label','evidence_articles']
+
+    def get_evidence_articles(self, obj) -> list:
+        return [{
+            'id': article.pk, 'title': article.title, 'slug': article.slug,
+            'story_id': article.story_id,
+        } for article in obj.evidence_articles.all() if article.status == 'PUBLISHED']
 
 class PatronSerializer(serializers.ModelSerializer):
     patron_type_label = serializers.CharField(source='get_patron_type_display', read_only=True)
@@ -81,9 +125,13 @@ class RoleDefinitionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class LeaderSerializer(serializers.ModelSerializer):
+    # Round 2 (screen 115): tier is the member's role tier, the same
+    # value UserSerializer exposes as `tier`.
+    tier = serializers.CharField(source='role', read_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'role', 'role_definition', 'photo']
+        fields = ['id', 'first_name', 'last_name', 'role', 'tier', 'role_definition', 'photo']
 
 class TelegramMembershipSerializer(serializers.ModelSerializer):
     class Meta:
@@ -258,7 +306,10 @@ class LeadershipSeatSerializer(serializers.Serializer):
     holder = LeadershipHolderSerializer(allow_null=True)
 
 class MemberSerializer(serializers.ModelSerializer):
-    role_title = serializers.CharField(source='role_definition.title', allow_null=True, read_only=True)
+    role_title = serializers.SerializerMethodField()
+
+    def get_role_title(self, obj):
+        return role_title(obj)
     zone_name = serializers.CharField(source='zone.name', allow_null=True, read_only=True)
     lga_name = serializers.CharField(source='lga.name', allow_null=True, read_only=True)
     ward_name = serializers.CharField(source='ward.name', allow_null=True, read_only=True)
@@ -284,12 +335,22 @@ class ReportCreateSerializer(serializers.Serializer):
     content = serializers.CharField()
     period = serializers.CharField(max_length=100, required=False, allow_blank=True, default='')
     deadline = serializers.DateField(required=False, allow_null=True)
+    # Round 2 (screen 73): the Report model carries report_type and
+    # submitted_to (the recipient). The workflow derives both from the
+    # submitter (core.services.reports.create_report); they are
+    # accepted here so the client can send them, and the create view
+    # validates them against the derived values — a mismatch is a 400,
+    # never a silent reroute.
+    report_type = serializers.ChoiceField(
+        choices=['WARD_TO_LGA', 'LGA_TO_ZONAL', 'ZONAL_TO_STATE'],
+        required=False)
+    submitted_to = serializers.IntegerField(required=False, allow_null=True)
 
 class ArticleWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Campaign
-        fields = ['id','slug','status','rejection_note','title','subheadline','category','location','lga','ward','verification_status','reporter_credit','content','content_json','featured_image','meta_description']
-        read_only_fields = ['id','slug','status','rejection_note']
+        fields = ['id','slug','status','rejection_note','title','subheadline','category','location','lga','ward','verification_status','reporter_credit','content','content_json','featured_image','meta_description','story_id','source_name','source_url']
+        read_only_fields = ['id','slug','status','rejection_note','story_id']
     def validate(self,attrs):
         lga=attrs.get('lga',getattr(self.instance,'lga',None))
         ward=attrs.get('ward',getattr(self.instance,'ward',None))
@@ -319,7 +380,7 @@ class EventSerializer(serializers.ModelSerializer):
         return attrs
     class Meta:
         model = Event
-        fields = ['id','title','description','location','start_date','end_date','created_by','created_at','updated_at']
+        fields = ['id','title','description','location','audience','start_date','end_date','created_by','created_at','updated_at']
         read_only_fields = ['id','created_by','created_at','updated_at']
 
 class AttendanceRecordSerializer(serializers.ModelSerializer):
@@ -366,8 +427,8 @@ class WelfareProgramSerializer(serializers.ModelSerializer):
 class DonationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Donation
-        fields = ['id','donor_name','amount','reference','notes','status','verified_by','verified_at','recorded_by','recorded_at','created_at']
-        read_only_fields = ['id','status','verified_by','verified_at','recorded_by','recorded_at','created_at']
+        fields = ['id','donor_name','amount','reference','notes','status','verified_by','verified_at','recorded_by','recorded_at','rejected_by','rejected_at','rejection_reason','created_at']
+        read_only_fields = ['id','status','verified_by','verified_at','recorded_by','recorded_at','rejected_by','rejected_at','rejection_reason','created_at']
 
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -399,17 +460,43 @@ from core.models import FAQ, CommunityReport
 from staff.models import Announcement, CommunityOutreach
 from donations.models import FinancialReport, AuditReport
 class FAQSerializer(serializers.ModelSerializer):
-    class Meta: model=FAQ; fields=['id','question','answer','order','is_active','created_at','updated_at']
+    # Part B (screen 53): category comes from the server-side mapping
+    # extracted verbatim from the public FAQ web template — see
+    # core/faq_categories.py (the one documented place for it).
+    category = serializers.SerializerMethodField()
+    class Meta: model=FAQ; fields=['id','question','answer','category','order','is_active','created_at','updated_at']
+    def get_category(self,obj) -> str:
+        from core.faq_categories import faq_category
+        return faq_category(obj.question)
 class CommunityReportSerializer(serializers.ModelSerializer):
+    # Round 2 (screen 43): the Community Voice payload names the LGA
+    # and ward, as the web page renders them ("<Ward> Ward, <LGA>
+    # LGA"). Reporter identity fields are unchanged.
+    lga_name = serializers.CharField(source='lga.name', allow_null=True, read_only=True)
+    ward_name = serializers.CharField(source='ward.name', allow_null=True, read_only=True)
     class Meta:
         model=CommunityReport
-        fields=['id','reporter_name','reporter_phone','submitted_by','ward','lga','zone','location_details','incident_date','incident_time','category','what_happened','who_was_involved','why_is_it_important','evidence_image','evidence_video','status','info_status','internal_notes','created_at']
+        fields=['id','reporter_name','reporter_phone','submitted_by','ward','lga','lga_name','ward_name','zone','location_details','incident_date','incident_time','category','what_happened','who_was_involved','why_is_it_important','evidence_image','evidence_video','status','info_status','internal_notes','created_at']
         read_only_fields=['id','reporter_name','reporter_phone','submitted_by','zone','status','info_status','internal_notes','created_at']
 class AnnouncementSerializer(serializers.ModelSerializer):
+    # Part B (screen 81): per-user read state from staff.AnnouncementRead
+    # receipts. Anonymous / context-less serialisation is always False.
+    is_read = serializers.SerializerMethodField()
     class Meta:
         model=Announcement
-        fields=['id','title','content','scope','priority','target_zone','target_lga','target_ward','is_active','expires_at','created_by','created_at','updated_at']
-        read_only_fields=['id','created_by','created_at','updated_at']
+        fields=['id','title','content','scope','priority','target_zone','target_lga','target_ward','is_active','expires_at','is_read','created_by','created_at','updated_at']
+        read_only_fields=['id','is_read','created_by','created_at','updated_at']
+    def get_is_read(self,obj) -> bool:
+        request=self.context.get('request')
+        user=getattr(request,'user',None)
+        if user is None or not getattr(user,'is_authenticated',False):
+            return False
+        # Prefer the annotation set by the received-list queryset.
+        annotated=getattr(obj,'_is_read',None)
+        if annotated is not None:
+            return bool(annotated)
+        from staff.models import AnnouncementRead
+        return AnnouncementRead.objects.filter(announcement=obj,user=user).exists()
     def validate(self,a):
         fields=('title','content','scope','priority','target_zone','target_lga','target_ward','is_active','expires_at')
         merged={name:getattr(self.instance,name) for name in fields} if self.instance else {}

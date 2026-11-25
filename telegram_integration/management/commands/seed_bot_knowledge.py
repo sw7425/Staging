@@ -11,7 +11,7 @@ KNOWLEDGE_ENTRIES = [
         "topic": "KPN Website - How to Register a New Account",
         "content": (
             "To register on the KPN website, follow these steps:\n\n"
-            "1. Go to https://www.kpn.com.ng and click the Login or Sign Up button at the top of the page.\n"
+            "1. Go to https://kpn-staging.onrender.com and click the Login or Sign Up button at the top of the page.\n"
             "2. Look for 'Don't have an account? Register here' and click it.\n"
             "3. Fill in the registration form with your full name, email address, password, phone number, "
             "LGA of residence, and your KPN role.\n"
@@ -30,7 +30,7 @@ KNOWLEDGE_ENTRIES = [
         "topic": "KPN Website - How to Login and Reset Password",
         "content": (
             "To log in to the KPN website:\n\n"
-            "1. Go to https://www.kpn.com.ng\n"
+            "1. Go to https://kpn-staging.onrender.com\n"
             "2. Click the Login button at the top of the page.\n"
             "3. Enter the email address you used when you registered.\n"
             "4. Enter your password and click Login.\n"
@@ -111,10 +111,10 @@ KNOWLEDGE_ENTRIES = [
             "- Open Telegram and search for @officialkpn.\n"
             "- Join the channel. Wait for approval if required.\n\n"
             "Step 2 - Log in to the KPN website:\n"
-            "- Go to https://www.kpn.com.ng and log in to your account.\n\n"
+            "- Go to https://kpn-staging.onrender.com and log in to your account.\n\n"
             "Step 3 - Go to the Connect Telegram page:\n"
             "- Click the Connect Telegram button on your dashboard.\n"
-            "- Or visit https://www.kpn.com.ng/join/telegram/ directly.\n\n"
+            "- Or visit https://kpn-staging.onrender.com/join/telegram/ directly.\n\n"
             "Step 4 - Click the Telegram Login button:\n"
             "- A blue Telegram login button will appear on the page. Click it.\n"
             "- Your Telegram app will open or a window will appear.\n\n"
@@ -127,10 +127,10 @@ KNOWLEDGE_ENTRIES = [
             "- If not verified, join @officialkpn first then try again.\n\n"
             "Common problems:\n"
             "- Page hangs after Telegram approval: Close the tab, go back to "
-            "https://www.kpn.com.ng/join/telegram/ and try again.\n"
+            "https://kpn-staging.onrender.com/join/telegram/ and try again.\n"
             "- Not verified: Make sure the Telegram account you authorised is the same one "
             "that is inside the @officialkpn channel.\n"
-            "- Always use https://www.kpn.com.ng with the www prefix.\n"
+            "- Always use https://kpn-staging.onrender.com with the www prefix.\n"
             "- Contact your KPN LGA or State leadership if problems continue."
         ),
     },
@@ -221,7 +221,7 @@ KNOWLEDGE_ENTRIES = [
             "For questions about who holds a specific leadership position such as the Ward Adviser of "
             "a particular ward, or the LGA Network Lead of a particular LGA, visit the KPN Leadership "
             "Directory on the website:\n\n"
-            "https://www.kpn.com.ng/leadership/\n\n"
+            "https://kpn-staging.onrender.com/leadership/\n\n"
             "This page shows the full, up-to-date list of KPN leaders at all levels including "
             "State Executive, Senatorial, LGA, and Ward.\n\n"
             "If the information is not on the website, contact your LGA Network Lead or the "

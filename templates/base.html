@@ -18,7 +18,7 @@
     <script src="{% static 'staff/js/appearance.js' %}"></script>
     <link rel="stylesheet" href="{% static 'staff/css/tailwind.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'staff/css/kpn-design.css' %}?v=state-actions-v1">
+    <link rel="stylesheet" href="{% static 'staff/css/kpn-design.css' %}?v=inter-1">
     <script defer src="{% static 'vendor/alpine/alpine.min.js' %}"></script>
 
     {% block extra_css %}{% endblock %}
@@ -40,11 +40,110 @@
                 <!-- Desktop Menu -->
                 <div class="hidden xl:flex items-center gap-1">
                     <a href="{% url 'core:home' %}" class="kpn-nav-link">Home</a>
-                    <a href="{% url 'campaigns:newsroom' %}" class="kpn-nav-link">Newsroom</a>
-                    <a href="{% url 'core:community' %}" class="kpn-nav-link">Community</a>
+
+                    <!-- Newsroom Dropdown -->
+                    <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button class="kpn-nav-link flex items-center gap-1">
+                            Newsroom
+                            <i class="fas fa-chevron-down text-[10px] opacity-60"></i>
+                        </button>
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 translate-y-1"
+                             class="kpn-dropdown top-full left-0"
+                             x-cloak>
+                            <a href="{% url 'campaigns:newsroom' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-newspaper text-kpn-green w-4 text-center"></i>News
+                            </a>
+                            <a href="{% url 'lga_news:index' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-location-dot text-kpn-green w-4 text-center"></i>LGA News
+                            </a>
+                            <a href="{% url 'promises:list' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-handshake text-kpn-green w-4 text-center"></i>Promise Tracker
+                            </a>
+                            <a href="{% url 'projects:list' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-hard-hat text-kpn-green w-4 text-center"></i>Project Tracker
+                            </a>
+                            <a href="{% url 'impact_files:list' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-heart text-kpn-green w-4 text-center"></i>Human Impact Files
+                            </a>
+                            <a href="{% url 'signals:list' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-chart-line text-kpn-green w-4 text-center"></i>Future Signal
+                            </a>
+                            <a href="{% url 'archive:home' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-archive text-kpn-green w-4 text-center"></i>Story Archive
+                            </a>
+                        </div>
+                    </div>
+
                     <a href="{% url 'core:opportunities' %}" class="kpn-nav-link">Opportunities</a>
-                    <a href="{% url 'core:civic' %}" class="kpn-nav-link">Civic</a>
-                    <a href="{% url 'core:advocacy' %}" class="kpn-nav-link">Advocacy</a>
+
+                    <!-- Community Dropdown -->
+                    <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button class="kpn-nav-link flex items-center gap-1">
+                            Community
+                            <i class="fas fa-chevron-down text-[10px] opacity-60"></i>
+                        </button>
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 translate-y-1"
+                             class="kpn-dropdown top-full left-0"
+                             x-cloak>
+                            <a href="{% url 'core:community' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-users text-kpn-green w-4 text-center"></i>Community Initiatives
+                            </a>
+                            <a href="{% url 'staff:register' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-hands-helping text-kpn-green w-4 text-center"></i>Volunteer Network
+                            </a>
+                            <a href="{% url 'core:community_report' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-bullhorn text-kpn-green w-4 text-center"></i>Community Reports
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Civic Engagement & Advocacy Dropdown -->
+                    <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button class="kpn-nav-link flex items-center gap-1">
+                            Civic &amp; Advocacy
+                            <i class="fas fa-chevron-down text-[10px] opacity-60"></i>
+                        </button>
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 translate-y-1"
+                             class="kpn-dropdown top-full left-0"
+                             x-cloak>
+                            <a href="{% url 'core:civic' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-landmark text-kpn-green w-4 text-center"></i>Overview
+                            </a>
+                            <a href="{% url 'core:civic_education' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-graduation-cap text-kpn-green w-4 text-center"></i>Civic Education
+                            </a>
+                            <a href="{% url 'core:civic_governance' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-balance-scale text-kpn-green w-4 text-center"></i>Governance &amp; Accountability
+                            </a>
+                            <a href="{% url 'core:community_voice' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-comments text-kpn-green w-4 text-center"></i>Community Voice
+                            </a>
+                            <a href="{% url 'core:advocacy' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-bullhorn text-kpn-green w-4 text-center"></i>Advocacy Campaigns
+                            </a>
+                            <a href="{% url 'core:election_observation' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-vote-yea text-kpn-green w-4 text-center"></i>Election Observation
+                            </a>
+                        </div>
+                    </div>
 
                     <!-- KPN Network Dropdown -->
                     <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
@@ -61,22 +160,24 @@
                              x-transition:leave-end="opacity-0 translate-y-1"
                              class="kpn-dropdown top-full left-0"
                              x-cloak>
-                            <a href="{% url 'core:patrons' %}" class="kpn-dropdown-item">
-                                <i class="fas fa-crown text-yellow-500 w-4 text-center"></i>Our Patrons
-                            </a>
                             <a href="{% url 'core:leadership' %}" class="kpn-dropdown-item">
-                                <i class="fas fa-sitemap text-blue-500 w-4 text-center"></i>Leadership Directory
+                                <i class="fas fa-sitemap text-kpn-green w-4 text-center"></i>Leadership Directory
                             </a>
-                            <a href="{% url 'core:code_of_conduct' %}" class="kpn-dropdown-item">
-                                <i class="fas fa-file-contract text-gray-500 w-4 text-center"></i>Code of Conduct
+                            <a href="{% url 'core:patrons' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-crown text-kpn-green w-4 text-center"></i>Our Patrons
                             </a>
                             <a href="{% url 'core:impact' %}" class="kpn-dropdown-item">
                                 <i class="fas fa-chart-line text-kpn-green w-4 text-center"></i>Impact &amp; Metrics
+                            </a>
+                            <a href="{% url 'core:code_of_conduct' %}" class="kpn-dropdown-item">
+                                <i class="fas fa-file-contract text-kpn-green w-4 text-center"></i>Code of Conduct
                             </a>
                         </div>
                     </div>
 
                     <a href="{% url 'core:about' %}" class="kpn-nav-link">About</a>
+                    <a href="{% url 'core:contact' %}" class="kpn-nav-link">Contact</a>
+                    <a href="{% url 'core:support_us' %}" class="kpn-nav-link">Support KPN</a>
 
                     <!-- Divider -->
                     <div class="h-5 w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
@@ -86,62 +187,9 @@
                             <i class="fas fa-bullhorn text-xs mr-0.5"></i>Report Story
                         </a>
 
-                        <!-- Notification Bell -->
-                        <div class="relative" x-data="{ bellOpen: false }" @click.outside="bellOpen = false">
-                            <button @click="bellOpen = !bellOpen"
-                                    class="kpn-icon-btn relative"
-                                    aria-label="Notifications">
-                                <i class="fas fa-bell text-sm"></i>
-                                {% if unread_notifications_count %}
-                                <span class="kpn-count-badge bg-red-500 text-white absolute -top-1 -right-1 text-[9px]">
-                                    {{ unread_notifications_count }}
-                                </span>
-                                {% endif %}
-                            </button>
-
-                            <!-- Bell dropdown -->
-                            <div x-show="bellOpen" x-cloak
-                                 x-transition:enter="transition ease-out duration-150"
-                                 x-transition:enter-start="opacity-0 translate-y-1"
-                                 x-transition:enter-end="opacity-100 translate-y-0"
-                                 class="absolute right-0 mt-1 w-80 kpn-card z-50">
-                                <div class="kpn-card-header">
-                                    <span class="text-sm font-semibold">Notifications</span>
-                                    {% if unread_notifications_count %}
-                                    <a href="{% url 'core:mark_notifications_read' %}"
-                                       class="text-xs text-kpn-blue hover:underline">
-                                        Mark all read
-                                    </a>
-                                    {% endif %}
-                                </div>
-                                <div class="max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700">
-                                    {% for notif in recent_notifications %}
-                                    <a href="{{ notif.link|default:'#' }}"
-                                       class="flex items-start gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors {% if not notif.is_read %}bg-green-50/60 dark:bg-green-900/10{% endif %}">
-                                        <div class="mt-0.5 w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 text-xs
-                                            {% if notif.notif_type == 'SUCCESS' %}bg-green-100 text-green-600
-                                            {% elif notif.notif_type == 'WARNING' %}bg-yellow-100 text-yellow-600
-                                            {% elif notif.notif_type == 'ACTION' %}bg-red-100 text-red-600
-                                            {% else %}bg-blue-100 text-blue-600{% endif %}">
-                                            <i class="fas {% if notif.notif_type == 'SUCCESS' %}fa-check{% elif notif.notif_type == 'WARNING' %}fa-exclamation{% elif notif.notif_type == 'ACTION' %}fa-bolt{% else %}fa-info{% endif %}"></i>
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <p class="text-xs font-semibold text-gray-800 dark:text-white truncate">{{ notif.title }}</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{{ notif.message|truncatechars:70 }}</p>
-                                            <p class="text-[10px] text-gray-400 mt-0.5">{{ notif.created_at|timesince }} ago</p>
-                                        </div>
-                                    </a>
-                                    {% empty %}
-                                    <div class="kpn-empty py-8">
-                                        <div class="kpn-empty-icon">
-                                            <i class="fas fa-bell-slash"></i>
-                                        </div>
-                                        <p class="kpn-empty-title text-sm">No notifications</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
+                        {% include 'includes/notification_bell.html' with bell_id="desktop" %}
+                        {% if editorial_available %}<a href="{% url 'editorial:index' %}" class="kpn-nav-link">Editorial Assistant</a>{% endif %}
+                        {% if ict_admin_available %}<a href="{% url 'core:ict_admin' %}" class="kpn-nav-link">ICT Admin</a>{% endif %}
 
                         <a href="{% url 'staff:dashboard' %}"
                            class="kpn-btn kpn-btn-primary kpn-btn-sm">
@@ -170,42 +218,7 @@
                 <!-- Mobile Controls -->
                 <div class="xl:hidden flex items-center gap-1">
                     {% if user.is_authenticated %}
-                    <div class="relative" x-data="{ bellOpen: false }" @click.outside="bellOpen = false">
-                        <button @click="bellOpen = !bellOpen" class="kpn-icon-btn relative">
-                            <i class="fas fa-bell text-sm"></i>
-                            {% if unread_notifications_count %}
-                            <span class="kpn-count-badge bg-red-500 text-white absolute -top-1 -right-1 text-[9px]">
-                                {{ unread_notifications_count }}
-                            </span>
-                            {% endif %}
-                        </button>
-                        <div x-show="bellOpen" x-cloak
-                             class="absolute right-0 mt-1 w-72 kpn-card z-50">
-                            <div class="kpn-card-header">
-                                <span class="text-sm font-semibold">Notifications</span>
-                            </div>
-                            <div class="max-h-64 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700">
-                                {% for notif in recent_notifications %}
-                                <a href="{{ notif.link|default:'#' }}"
-                                   class="flex items-start gap-2.5 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                                    <div class="mt-0.5 w-5 h-5 rounded flex items-center justify-center flex-shrink-0 text-[10px]
-                                        {% if notif.notif_type == 'SUCCESS' %}bg-green-100 text-green-600
-                                        {% elif notif.notif_type == 'WARNING' %}bg-yellow-100 text-yellow-600
-                                        {% elif notif.notif_type == 'ACTION' %}bg-red-100 text-red-600
-                                        {% else %}bg-blue-100 text-blue-600{% endif %}">
-                                        <i class="fas {% if notif.notif_type == 'SUCCESS' %}fa-check{% elif notif.notif_type == 'WARNING' %}fa-exclamation{% elif notif.notif_type == 'ACTION' %}fa-bolt{% else %}fa-info{% endif %}"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="text-xs font-semibold truncate">{{ notif.title }}</p>
-                                        <p class="text-[10px] text-gray-400">{{ notif.created_at|timesince }} ago</p>
-                                    </div>
-                                </a>
-                                {% empty %}
-                                <p class="text-xs text-center text-gray-400 py-4">No notifications</p>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
+                    {% include 'includes/notification_bell.html' with bell_id="mobile" compact=True %}
                     {% endif %}
 
                     <select data-appearance-select class="kpn-appearance-select" aria-label="Appearance">
@@ -238,43 +251,107 @@
                 <a href="{% url 'core:home' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                     <i class="fas fa-home text-kpn-green w-4 text-center text-xs"></i>Home
                 </a>
-                <a href="{% url 'campaigns:newsroom' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <i class="fas fa-newspaper text-orange-500 w-4 text-center text-xs"></i>Newsroom
-                </a>
-                <a href="{% url 'core:community' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <i class="fas fa-users text-blue-500 w-4 text-center text-xs"></i>Community
-                </a>
+
+                <!-- Newsroom Section -->
+                <div class="pt-2 pb-1">
+                    <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Newsroom</p>
+                </div>
+                <div class="pl-4 border-l border-gray-200 dark:border-gray-700 ml-3 space-y-0.5">
+                    <a href="{% url 'campaigns:newsroom' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-newspaper text-kpn-green w-4 text-center text-xs"></i>News
+                    </a>
+                    <a href="{% url 'lga_news:index' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-location-dot text-kpn-green w-4 text-center text-xs"></i>LGA News
+                    </a>
+                    <a href="{% url 'promises:list' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-handshake text-kpn-green w-4 text-center text-xs"></i>Promise Tracker
+                    </a>
+                    <a href="{% url 'projects:list' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-hard-hat text-kpn-green w-4 text-center text-xs"></i>Project Tracker
+                    </a>
+                    <a href="{% url 'impact_files:list' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-heart text-kpn-green w-4 text-center text-xs"></i>Human Impact Files
+                    </a>
+                    <a href="{% url 'signals:list' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-chart-line text-kpn-green w-4 text-center text-xs"></i>Future Signal
+                    </a>
+                    <a href="{% url 'archive:home' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-archive text-kpn-green w-4 text-center text-xs"></i>Story Archive
+                    </a>
+                </div>
+
                 <a href="{% url 'core:opportunities' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <i class="fas fa-briefcase text-indigo-500 w-4 text-center text-xs"></i>Opportunities
+                    <i class="fas fa-briefcase text-kpn-green w-4 text-center text-xs"></i>Opportunities
                 </a>
-                <a href="{% url 'core:civic' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <i class="fas fa-landmark text-gray-500 w-4 text-center text-xs"></i>Civic
-                </a>
-                <a href="{% url 'core:advocacy' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <i class="fas fa-bullhorn text-red-500 w-4 text-center text-xs"></i>Advocacy
-                </a>
+
+                <!-- Community Section -->
+                <div class="pt-2 pb-1">
+                    <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Community</p>
+                </div>
+                <div class="pl-4 border-l border-gray-200 dark:border-gray-700 ml-3 space-y-0.5">
+                    <a href="{% url 'core:community' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-users text-kpn-green w-4 text-center text-xs"></i>Community Initiatives
+                    </a>
+                    <a href="{% url 'staff:register' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-hands-helping text-kpn-green w-4 text-center text-xs"></i>Volunteer Network
+                    </a>
+                    <a href="{% url 'core:community_report' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-bullhorn text-kpn-green w-4 text-center text-xs"></i>Community Reports
+                    </a>
+                </div>
+
+                <!-- Civic Engagement & Advocacy Section -->
+                <div class="pt-2 pb-1">
+                    <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Civic Engagement &amp; Advocacy</p>
+                </div>
+                <div class="pl-4 border-l border-gray-200 dark:border-gray-700 ml-3 space-y-0.5">
+                    <a href="{% url 'core:civic' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-landmark text-kpn-green w-4 text-center text-xs"></i>Civic Engagement &amp; Advocacy
+                    </a>
+                    <a href="{% url 'core:civic_education' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-graduation-cap text-kpn-green w-4 text-center text-xs"></i>Civic Education
+                    </a>
+                    <a href="{% url 'core:civic_governance' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-balance-scale text-kpn-green w-4 text-center text-xs"></i>Governance &amp; Accountability
+                    </a>
+                    <a href="{% url 'core:community_voice' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-comments text-kpn-green w-4 text-center text-xs"></i>Community Voice
+                    </a>
+                    <a href="{% url 'core:advocacy' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-bullhorn text-kpn-green w-4 text-center text-xs"></i>Advocacy Campaigns
+                    </a>
+                    <a href="{% url 'core:election_observation' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-vote-yea text-kpn-green w-4 text-center text-xs"></i>Election Observation
+                    </a>
+                </div>
 
                 <!-- KPN Network Section -->
                 <div class="pt-2 pb-1">
                     <p class="px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">KPN Network</p>
                 </div>
                 <div class="pl-4 border-l border-gray-200 dark:border-gray-700 ml-3 space-y-0.5">
-                    <a href="{% url 'core:patrons' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <i class="fas fa-crown text-yellow-500 w-4 text-center text-xs"></i>Our Patrons
-                    </a>
                     <a href="{% url 'core:leadership' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <i class="fas fa-sitemap text-blue-500 w-4 text-center text-xs"></i>Leadership Directory
+                        <i class="fas fa-sitemap text-kpn-green w-4 text-center text-xs"></i>Leadership Directory
                     </a>
-                    <a href="{% url 'core:code_of_conduct' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <i class="fas fa-file-contract text-gray-500 w-4 text-center text-xs"></i>Code of Conduct
+                    <a href="{% url 'core:patrons' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-crown text-kpn-green w-4 text-center text-xs"></i>Our Patrons
                     </a>
                     <a href="{% url 'core:impact' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                         <i class="fas fa-chart-line text-kpn-green w-4 text-center text-xs"></i>Impact &amp; Metrics
                     </a>
+                    <a href="{% url 'core:code_of_conduct' %}" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-file-contract text-kpn-green w-4 text-center text-xs"></i>Code of Conduct
+                    </a>
                 </div>
 
                 <a href="{% url 'core:about' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <i class="fas fa-info-circle text-kpn-blue w-4 text-center text-xs"></i>About KPN
+                    <i class="fas fa-info-circle text-kpn-green w-4 text-center text-xs"></i>About KPN
+                </a>
+                <a href="{% url 'core:contact' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-envelope text-kpn-green w-4 text-center text-xs"></i>Contact
+                </a>
+                <a href="{% url 'core:support_us' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-heart text-kpn-green w-4 text-center text-xs"></i>Support KPN
                 </a>
 
                 <!-- Auth actions -->
@@ -286,6 +363,8 @@
                         <a href="{% url 'staff:dashboard' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-semibold text-white bg-kpn-green hover:bg-green-600 transition-colors">
                             <i class="fas fa-th-large w-4 text-center text-xs"></i>Dashboard
                         </a>
+                        {% if editorial_available %}<a href="{% url 'editorial:index' %}" class="kpn-nav-link">Editorial Assistant</a>{% endif %}
+                        {% if ict_admin_available %}<a href="{% url 'core:ict_admin' %}" class="kpn-nav-link">ICT Admin</a>{% endif %}
                         <a href="{% url 'staff:logout' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                             <i class="fas fa-sign-out-alt w-4 text-center text-xs"></i>Logout
                         </a>
@@ -398,7 +477,7 @@
                         </a>
                     </div>
                     <div class="space-y-1.5 text-xs text-gray-400">
-                        <p class="flex items-center gap-2"><i class="fas fa-envelope text-kpn-green w-3"></i>info@kpn.com.ng</p>
+                        <p class="flex items-center gap-2"><i class="fas fa-envelope text-kpn-green w-3"></i>info@kpn-staging.onrender.com</p>
                         <p class="flex items-center gap-2"><i class="fas fa-phone text-kpn-green w-3"></i>+234 8037851112</p>
                         <p class="flex items-center gap-2 leading-relaxed"><i class="fas fa-map-marker-alt text-kpn-green w-3 flex-shrink-0 mt-0.5"></i>Sani Abacha Bypass Road, Birnin Kebbi</p>
                     </div>

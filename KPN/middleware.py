@@ -11,8 +11,8 @@ class RemoveWWWMiddleware:
     non-www version. This ensures the Telegram Login Widget always
     loads correctly since BotFather only allows one domain per bot.
 
-    e.g. https://www.kpn.com.ng/join/telegram/
-      → https://kpn.com.ng/join/telegram/   (301 Permanent Redirect)
+    e.g. https://kpn-staging.onrender.com/join/telegram/
+      → https://kpn-staging.onrender.com/join/telegram/   (301 Permanent Redirect)
     """
 
     def __init__(self, get_response):

@@ -42,28 +42,3 @@ Thumbs.db
 .env
 .env
 staticfiles_build/
-
-# Frontend asset tooling (compiled CSS is committed)
-node_modules/
-
-# Private release and local QA material
-*.jks
-*.keystore
-*.p12
-*.pfx
-*.dump
-*.apk
-*.aab
-local.properties
-.env.*.local
-firebase-service-account*.json
-signing/
-
-# Staging safety
-.env.*
-!.env.example
-!.env.production.example
-!.env.staging.example
-media/profile_photos/
-media/gallery/
-attached_assets/

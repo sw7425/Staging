@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Story Archive | KPN — Kebbi Progressive Youth Network{% endblock %}
+
+{% block content %}
+<section class="kpn-page-hero kpn-page-hero-photo" style="--hero:url('{% static 'img/archive-hero.jpg' %}')">
+    <div class="kpn-home-container">
+        <p class="kpn-eyebrow">Institutional memory</p>
+        <h1>Story Archive</h1>
+        <p>To preserve KPN's published records as a searchable institutional memory.</p>
+    </div>
+</section>
+
+<div class="kpn-home-container">
+    {% include 'includes/breadcrumbs.html' %}
+    <div class="kpn-trust-strip">
+        <span><i class="fas fa-book-open" aria-hidden="true"></i>{{ record_counts.stories }} published stor{{ record_counts.stories|pluralize:"y,ies" }} on record</span>
+        <span><i class="fas fa-clock-rotate-left" aria-hidden="true"></i>{{ record_counts.updates }} story update{{ record_counts.updates|pluralize }} published</span>
+        <span><i class="fas fa-handshake" aria-hidden="true"></i>{{ record_counts.promises }} promise{{ record_counts.promises|pluralize }} in the Promise Tracker</span>
+        <span><i class="fas fa-barcode" aria-hidden="true"></i>Every story carries its KPN Story ID</span>
+    </div>
+</div>
+
+<div class="bg-gray-50 dark:bg-gray-900">
+  <!-- Search & Filters -->
+  <section class="py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <form method="get" action="{% url 'archive:home' %}">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+              <i class="fas fa-search text-xs"></i>
+            </span>
+            <label class="sr-only" for="archive-q">Search the archive</label>
+            <input id="archive-q" type="search" name="q" value="{{ params.q }}"
+                   placeholder="Search stories, updates and promises, or enter a Story ID"
+                   class="kpn-input pl-8">
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="kpn-btn kpn-btn-primary">
+              <i class="fas fa-search"></i> Search
+            </button>
+            {% if not browsing %}
+            <a href="{% url 'archive:home' %}" class="kpn-btn kpn-btn-secondary">
+              <i class="fas fa-times"></i> Clear
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1" for="archive-type">Show</label>
+            <select id="archive-type" name="type" class="kpn-input kpn-select w-full">
+              <option value="all" {% if params.type == 'all' %}selected{% endif %}>Everything</option>
+              {% for value, label in type_choices %}
+              <option value="{{ value }}" {% if params.type == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1" for="archive-topic">Topic</label>
+            <select id="archive-topic" name="topic" class="kpn-input kpn-select w-full">
+              <option value="">All topics</option>
+              {% for value, label in topic_choices %}
+              <option value="{{ value }}" {% if params.topic == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1" for="archive-category">Category</label>
+            <select id="archive-category" name="category" class="kpn-input kpn-select w-full">
+              <option value="">All categories</option>
+              {% for value, label in categories %}
+              <option value="{{ value }}" {% if params.category == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1" for="archive-zone">Senatorial zone</label>
+            <select id="archive-zone" name="zone" class="kpn-input kpn-select w-full">
+              <option value="">All zones</option>
+              {% for zone in zones %}
+              <option value="{{ zone.pk }}" {% if params.zone == zone.pk %}selected{% endif %}>{{ zone.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1" for="archive-lga">LGA</label>
+            <select id="archive-lga" name="lga" class="kpn-input kpn-select w-full">
+              <option value="">All LGAs</option>
+              {% for lga in lgas %}
+              <option value="{{ lga.pk }}" {% if params.lga == lga.pk %}selected{% endif %}>{{ lga.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1" for="archive-ward">Ward</label>
+            <select id="archive-ward" name="ward" class="kpn-input kpn-select w-full">
+              <option value="">All wards</option>
+              {% for ward in wards %}
+              <option value="{{ ward.pk }}" {% if params.ward == ward.pk %}selected{% endif %}>{{ ward }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1" for="archive-institution">Institution (promises)</label>
+            <select id="archive-institution" name="institution" class="kpn-input kpn-select w-full">
+              <option value="">All institutions</option>
+              {% for institution in institutions %}
+              <option value="{{ institution.pk }}" {% if params.institution == institution.pk %}selected{% endif %}>{{ institution.name }}</option>
+              {% endfor %}
+            </select>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">The institution filter applies to Promise Tracker records.</p>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1" for="archive-from">From date</label>
+            <input id="archive-from" type="date" name="date_from" value="{{ params.date_from|date:'Y-m-d' }}"
+                   class="kpn-input w-full">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1" for="archive-to">To date</label>
+            <input id="archive-to" type="date" name="date_to" value="{{ params.date_to|date:'Y-m-d' }}"
+                   class="kpn-input w-full">
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      {% if not browsing %}
+      <p class="text-gray-700 dark:text-gray-200 mb-6" role="status">
+        <strong>{{ total_results }}</strong> result{{ total_results|pluralize }} found
+        {% if params.q %}for &ldquo;{{ params.q }}&rdquo;{% endif %}
+        {% if show_stories %}— {{ stories_total }} stor{{ stories_total|pluralize:"y,ies" }}{% endif %}
+        {% if show_updates %}, {{ updates_total }} update{{ updates_total|pluralize }}{% endif %}
+        {% if show_promises %}, {{ promises_total }} promise{{ promises_total|pluralize }}{% endif %}.
+      </p>
+      {% endif %}
+
+      {% if not browsing and total_results == 0 %}
+      <div class="kpn-home-empty" style="margin-bottom:40px">
+        <p class="kpn-empty-title">No records match your search</p>
+        <p class="kpn-empty-desc">Try a different keyword, or clear the filters to see the whole record.</p>
+        <p style="margin-top:14px"><a href="{% url 'archive:home' %}" class="kpn-btn kpn-btn-primary">Clear search and filters</a></p>
+      </div>
+      {% endif %}
+
+      {% if browsing and record_counts.stories == 0 %}
+      <div class="kpn-home-empty" style="margin-bottom:40px">
+        <p class="kpn-empty-title">No stories in the archive yet</p>
+        <p class="kpn-empty-desc">The Story Archive preserves KPN's published records as a searchable institutional memory. Published stories, their updates and the promises KPN tracks will appear here.</p>
+      </div>
+      {% endif %}
+
+      {% if show_stories and stories_page %}
+      <section aria-label="Stories" class="mb-10">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-l-4 border-kpn-green pl-3">Stories{% if not browsing %} <span class="text-sm font-semibold text-gray-500">({{ stories_total }})</span>{% endif %}</h2>
+        <div class="space-y-5">
+          {% for article in stories_page %}
+          <article class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-kpn-green text-white">Story</span>
+              {% if article.section_kind == 'IMPACT' %}<span class="kpn-tag">Human Impact File</span>
+              {% elif article.section_kind == 'SIGNAL' %}<span class="kpn-tag gold">Future Signal</span>{% endif %}
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-gray-200 text-gray-700">{{ article.get_category_display }}</span>
+              {% if article.story_id %}<span class="text-xs font-mono font-semibold bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-2.5 py-1 rounded-md">{{ article.story_id }}</span>{% endif %}
+              {% if article.correction_count %}<span class="kpn-tag gold">Corrected &middot; {{ article.correction_count }} on record</span>{% endif %}
+              {% if article.update_count %}<span class="kpn-tag soft">Updated &middot; {{ article.update_count }} update{{ article.update_count|pluralize }}</span>{% endif %}
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+              <a href="{% url 'campaigns:article_detail' article.slug %}" class="hover:text-kpn-green">{{ article.title }}</a>
+            </h3>
+            {% if article.excerpt %}<p class="text-gray-700 dark:text-gray-300 mt-2">{{ article.excerpt }}</p>{% endif %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
+              Published {{ article.published_at|date:"F j, Y" }}
+              {% if article.lga %} &middot; {{ article.lga.name }}{% endif %}
+              {% if article.location %} &middot; {{ article.location }}{% endif %}
+              &middot; Record status: Published{% if article.update_count %} &middot; Updated{% endif %}{% if article.correction_count %} &middot; Corrected{% endif %}
+            </p>
+            {% if article.section_url or article.linked_promises %}
+            <div class="kpn-archive-xlinks">
+              {% if article.section_url %}<a href="{{ article.section_url }}">Also filed in {% if article.section_kind == 'IMPACT' %}Human Impact Files{% else %}Future Signal{% endif %} &rarr;</a>{% endif %}
+              {% for promise in article.linked_promises %}<a href="{% url 'promises:detail' promise.pk %}">Promise Tracker: {{ promise.title }}</a>{% endfor %}
+            </div>
+            {% endif %}
+            {% if article.related_stories %}
+            <div class="kpn-archive-related">
+              <b>Related stories</b>
+              {% for rel in article.related_stories %}
+              <a href="{% url 'campaigns:article_detail' rel.slug %}">{{ rel.title }} <span>{{ rel.published_at|date:"M j, Y" }}</span></a>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </article>
+          {% empty %}
+          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-10 text-center">
+            <p class="text-gray-500 dark:text-gray-400">No published stories yet.</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% include 'story_intelligence/_archive_pagination.html' with page_obj=stories_page param='sp' %}
+      </section>
+      {% endif %}
+
+      {% if show_updates and updates_page %}
+      <section aria-label="Story updates" class="mb-10">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-l-4 border-kpn-green pl-3">Story updates <span class="text-sm font-semibold text-gray-500">({{ updates_total }})</span></h2>
+        <div class="space-y-5">
+          {% for update in updates_page %}
+          <article class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-blue-600 text-white">Story update</span>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-gray-200 text-gray-700">{{ update.get_kind_display }}</span>
+              {% if update.article.story_id %}<span class="text-xs font-mono font-semibold bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-2.5 py-1 rounded-md">{{ update.article.story_id }}</span>{% endif %}
+              {% if update.correction_count %}<span class="kpn-tag gold">Corrected &middot; {{ update.correction_count }} on record</span>{% endif %}
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+              <a href="{% url 'campaigns:article_detail' update.article.slug %}" class="hover:text-kpn-green">{{ update.title }}</a>
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Update on: {{ update.article.title }}</p>
+            {% if update.excerpt %}<p class="text-gray-700 dark:text-gray-300 mt-2">{{ update.excerpt }}</p>{% endif %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">Published {{ update.published_at|date:"F j, Y" }} &middot; Record status: Published{% if update.correction_count %} &middot; Corrected{% endif %}</p>
+            {% if update.section_url %}
+            <div class="kpn-archive-xlinks">
+              <a href="{{ update.section_url }}">The story is also filed in {% if update.section_kind == 'IMPACT' %}Human Impact Files{% else %}Future Signal{% endif %} &rarr;</a>
+            </div>
+            {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+        {% include 'story_intelligence/_archive_pagination.html' with page_obj=updates_page param='up' %}
+      </section>
+      {% endif %}
+
+      {% if show_promises and promises_page %}
+      <section aria-label="Promises" class="mb-10">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 border-l-4 border-kpn-green pl-3">Promises <span class="text-sm font-semibold text-gray-500">({{ promises_total }})</span></h2>
+        <div class="space-y-5">
+          {% for promise in promises_page %}
+          <article class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-purple-600 text-white">Promise</span>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-md
+                {% if promise.status == 'COMPLETED_VERIFIED' %}bg-green-100 text-green-800
+                {% elif promise.status == 'IN_PROGRESS' %}bg-blue-100 text-blue-800
+                {% elif promise.status == 'DELAYED' or promise.status == 'DISPUTED' %}bg-red-100 text-red-800
+                {% elif promise.status == 'DOCUMENTED' %}bg-yellow-100 text-yellow-800
+                {% else %}bg-gray-200 text-gray-700{% endif %}">{{ promise.get_status_display }}</span>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+              <a href="{% url 'promises:detail' promise.pk %}" class="hover:text-kpn-green">{{ promise.title }}</a>
+            </h3>
+            {% if promise.excerpt %}<p class="text-gray-700 dark:text-gray-300 mt-2">{{ promise.excerpt }}</p>{% endif %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
+              {{ promise.institution.name }} &middot; Announced {{ promise.announced_on|date:"F j, Y" }}
+              {% if promise.location_label %} &middot; {{ promise.location_label }}{% endif %}
+            </p>
+            {% if promise.linked_stories %}
+            <div class="kpn-archive-xlinks">
+              {% for story in promise.linked_stories %}<a href="{% url 'campaigns:article_detail' story.slug %}">Covered in: {{ story.title }}</a>{% endfor %}
+            </div>
+            {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+        {% include 'story_intelligence/_archive_pagination.html' with page_obj=promises_page param='pp' %}
+      </section>
+      {% endif %}
+
+      <!-- The same records, in their own sections (linked, not copied) -->
+      <section aria-label="Connected sections" class="kpn-archive-connected">
+        <a href="{% url 'promises:list' %}">
+          <b>Promise Tracker</b>
+          <span>{{ record_counts.promises }} public commitment{{ record_counts.promises|pluralize }} tracked</span>
+        </a>
+        <a href="{% url 'impact_files:list' %}">
+          <b>Human Impact Files</b>
+          <span>{{ record_counts.impact }} file{{ record_counts.impact|pluralize }} published</span>
+        </a>
+        <a href="{% url 'signals:list' %}">
+          <b>Future Signal</b>
+          <span>{{ record_counts.signal }} report{{ record_counts.signal|pluralize }} published</span>
+        </a>
+      </section>
+    </div>
+  </section>
+</div>
+{% endblock %}

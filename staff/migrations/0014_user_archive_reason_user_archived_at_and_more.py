@@ -3,6 +3,7 @@
 import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
+from ._seat_integrity import install_guard, remove_guard
 
 
 class Migration(migrations.Migration):
@@ -29,20 +30,7 @@ class Migration(migrations.Migration):
             name='archived_by',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='archived_applications', to=settings.AUTH_USER_MODEL),
         ),
-        migrations.AddConstraint(
-            model_name='user',
-            constraint=models.UniqueConstraint(condition=models.Q(('role', 'STATE'), ('role_definition__isnull', False), ('status', 'VERIFIED')), fields=('role_definition',), name='unique_verified_state_seat'),
-        ),
-        migrations.AddConstraint(
-            model_name='user',
-            constraint=models.UniqueConstraint(condition=models.Q(('role', 'ZONAL'), ('role_definition__isnull', False), ('status', 'VERIFIED')), fields=('role_definition', 'zone'), name='unique_verified_zonal_seat'),
-        ),
-        migrations.AddConstraint(
-            model_name='user',
-            constraint=models.UniqueConstraint(condition=models.Q(('role', 'LGA'), ('role_definition__isnull', False), ('status', 'VERIFIED')), fields=('role_definition', 'lga'), name='unique_verified_lga_seat'),
-        ),
-        migrations.AddConstraint(
-            model_name='user',
-            constraint=models.UniqueConstraint(condition=models.Q(('role', 'WARD'), ('role_definition__isnull', False), ('status', 'VERIFIED')), fields=('role_definition', 'ward'), name='unique_verified_ward_seat'),
-        ),
+        # Do not invalidate pre-existing verified assignments. New writes are
+        # guarded without updating or selecting a winner among existing rows.
+        migrations.RunPython(install_guard, remove_guard),
     ]

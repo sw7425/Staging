@@ -62,7 +62,7 @@ KPN CORE FACTS:
 - Motto: "One Voice, One Change."
 - Vision: To build a digitally empowered generation of young people leading positive change for a better, united, and progressive Kebbi State.
 - Mission: Build a strong, connected social media and community network across Kebbi State.
-- Website: https://www.kpn.com.ng
+- Website: https://kpn-staging.onrender.com
 - Structure (bottom to top): Ward Community Teams, LGA Network Teams, Senatorial Leadership Teams, State Executive Team
 - Senatorial Zones: Kebbi North, Kebbi Central, Kebbi South
 - State Executive Team positions (20): President, Vice President, General Secretary, Assistant General Secretary, Director of Monitoring & Compliance, Director of Legal Affairs & Ethics, Director of Finance, Finance Operations Officer, Director of Community Engagement, Assistant Director of Community Engagement, Director of Programmes & Events, Assistant Director of Programmes & Events, Director of Audit & Accountability, Director of Member Support & Welfare, Director of Youth Development, Director of Women's Development, Assistant Director of Women's Development, Director of Media & Communications, Assistant Director of Media & Communications, Director of Public Relations & Partnerships.
@@ -204,7 +204,7 @@ def call_openrouter(message: str, system_prompt: str, model: str = None) -> str:
         message=message,
         system_prompt=system_prompt,
         extra_headers={
-            'HTTP-Referer': 'https://kpn.com.ng',
+            'HTTP-Referer': 'https://kpn-staging.onrender.com',
             'X-Title': 'KPN Assistant',
         },
     )
@@ -300,7 +300,7 @@ def call_openai_compatible_db(provider_config, message: str, system_prompt: str)
         extra_headers = {}
         if provider_config.protocol == 'openrouter':
             extra_headers = {
-                'HTTP-Referer': 'https://kpn.com.ng',
+                'HTTP-Referer': 'https://kpn-staging.onrender.com',
                 'X-Title': 'KPN Assistant',
             }
             if not base_url:
@@ -499,6 +499,28 @@ def test_provider_connection(provider_config) -> dict:
 
 # ─── Main AI Query Function ───────────────────────────────────────────────────
 
+def _escalate_to_brain(telegram_user_id, message):
+    """Queue an unanswered question for Muse, the KPN brain.
+
+    Returns the member-facing reply when the question was queued, or None
+    when escalation is unavailable (no user id / queue failure), so the
+    caller can fall back to the standard unavailable message.
+    """
+    if not telegram_user_id:
+        return None
+    try:
+        from .brain_service import queue_question
+        queue_question(telegram_user_id, message)
+    except Exception as e:
+        logger.warning(f"Brain escalation failed: {e}")
+        return None
+    return (
+        "I've passed your question to the KPN media team. "
+        "You'll receive the answer here in this chat as soon as it's ready.\n\n"
+        "For urgent KPN matters, please contact KPN leadership directly."
+    )
+
+
 def ask_kpn_assistant(message: str, telegram_user_id: int = None,
                       extra_context: str = '') -> str:
     """
@@ -575,7 +597,7 @@ def ask_kpn_assistant(message: str, telegram_user_id: int = None,
 
     if not all_providers:
         logger.error("No AI providers configured (neither DB nor ENV).")
-        return (
+        return _escalate_to_brain(telegram_user_id, message) or (
             "The KPN Assistant is temporarily unavailable. "
             "Please try again later or contact KPN leadership."
         )
@@ -604,7 +626,7 @@ def ask_kpn_assistant(message: str, telegram_user_id: int = None,
         f"All AI providers failed for user {telegram_user_id}. "
         f"Last error: {last_error}"
     )
-    return (
+    return _escalate_to_brain(telegram_user_id, message) or (
         "I'm having trouble connecting to my knowledge system right now. "
         "Please try again in a few minutes. "
         "For urgent KPN matters, please contact KPN leadership directly."

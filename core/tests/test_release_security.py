@@ -30,7 +30,7 @@ class ContentSecurityTests(SimpleTestCase):
 class ProductionConfigurationTests(SimpleTestCase):
     def load_config(self,**values):
         env=os.environ.copy()
-        env.update(SESSION_SECRET=secrets.token_urlsafe(48),KPN_ENV='production',DEBUG='False',DATABASE_URL='',CLOUDINARY_CLOUD_NAME='',CLOUDINARY_API_KEY='',CLOUDINARY_API_SECRET='',SITE_URL='https://www.kpn.com.ng')
+        env.update(SESSION_SECRET=secrets.token_urlsafe(48),KPN_ENV='production',DEBUG='False',DATABASE_URL='',CLOUDINARY_CLOUD_NAME='',CLOUDINARY_API_KEY='',CLOUDINARY_API_SECRET='',SITE_URL='https://kpn-staging.onrender.com')
         env.update(values)
         return subprocess.run([sys.executable,'-c','import dotenv,decouple;dotenv.load_dotenv=lambda *a,**k:None;decouple.config=decouple.Config(decouple.RepositoryEmpty());import KPN.settings'],cwd=settings.BASE_DIR,env=env,capture_output=True,text=True,timeout=30)
     def test_production_cannot_fallback_to_sqlite(self):

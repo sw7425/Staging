@@ -133,7 +133,7 @@ def handle_verify(chat_id: int, user_id: int):
     else:
         link_status = (
             "⚠️ <b>Not linked to a KPN Profile.</b>\n"
-            "To link your account, log in to <a href='https://kpn.com.ng'>kpn.com.ng</a> and click 'Verify Membership'."
+            "To link your account, log in to <a href='https://kpn-staging.onrender.com'>kpn-staging.onrender.com</a> and click 'Verify Membership'."
         )
 
     if is_member:

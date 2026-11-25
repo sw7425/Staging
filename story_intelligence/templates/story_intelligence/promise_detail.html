@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ promise.title }} | KPN Promise Tracker{% endblock %}
+{% block extra_css %}{% include 'story_intelligence/_pt_styles.html' %}{% endblock %}
+{% block content %}
+<div class="pt bg-gray-50 dark:bg-gray-900 min-h-screen">
+
+  <section class="pt-detail-hero kpn-page-hero-photo" style="--hero:url('{% static 'img/promises-hero.jpg' %}')">
+    <i class="fas fa-landmark pt-hero-mark" aria-hidden="true"></i>
+    <div class="pt-detail-inner">
+      <a href="{% url 'promises:list' %}" class="pt-back"><i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Promise Tracker</a>
+      <div style="margin-top:.75rem;">
+        <span class="pt-badge pt-badge-{{ promise.status|lower }}">{% if promise.status == 'COMPLETED_VERIFIED' %}Completed — Verified{% elif promise.status == 'IN_PROGRESS' %}In Progress{% else %}{{ promise.get_status_display }}{% endif %}</span>
+        {% if delayed_flag and promise.status != 'DELAYED' %}<span class="pt-badge pt-badge-delayed">Delayed</span>{% endif %}
+      </div>
+      <h1>{{ promise.title }}</h1>
+      <p class="pt-detail-sub">{{ promise.status_label }}</p>
+      {% if detected_via_monitoring %}<p class="pt-detail-sub" style="margin-top:.4rem;"><i class="fas fa-satellite-dish" aria-hidden="true"></i> Detected via KPN monitoring and confirmed by our editors.</p>{% endif %}
+      <p class="pt-code" style="margin-top:.8rem; color:#c9d8e8;"><strong>{{ promise.public_code }}</strong>{% if promise.sector %}<span aria-hidden="true">•</span><span>{{ promise.get_sector_display }}</span>{% endif %}{% if promise.lga %}<span aria-hidden="true">•</span><span><i class="fas fa-location-dot" aria-hidden="true"></i> {{ promise.lga.name }} LGA</span>{% endif %}</p>
+    </div>
+  </section>
+
+  <div class="pt-detail-body">
+    {% if promise.display_image %}
+    <figure class="pt-detail-image">
+      <img src="{{ promise.display_image.url }}" alt="{{ promise.title }}">
+    </figure>
+    {% endif %}
+    <article class="pt-detail-card">
+      <div class="text-gray-700 dark:text-gray-300 leading-relaxed">{{ promise.description|linebreaks }}</div>
+
+      <dl class="pt-info-grid">
+        <div><dt>Responsible Institution</dt><dd>{{ promise.institution.name }} ({{ promise.institution.get_kind_display }})</dd></div>
+        {% if promise.location_label %}<div><dt>Where</dt><dd>{{ promise.location_label }}{% if promise.lga %} · <a href="{% url 'lga_news:detail' promise.lga.name|slugify %}" class="text-kpn-blue hover:underline">{{ promise.lga.name }} LGA news page</a>{% endif %}</dd></div>{% endif %}
+        <div><dt>Announced</dt><dd>{{ promise.announced_on|date:"F j, Y" }}{% if promise.announced_by %} by {{ promise.announced_by }}{% endif %}</dd></div>
+        {% if promise.deadline %}<div><dt>Promised Completion Date</dt><dd>{{ promise.deadline|date:"F j, Y" }}</dd></div>{% endif %}
+        {% if promise.source_url %}<div><dt>Announcement Source</dt><dd><a href="{{ promise.source_url }}" target="_blank" rel="noopener noreferrer" class="text-kpn-blue hover:underline">{{ promise.source_name|default:"View source" }}</a></dd></div>{% endif %}
+      </dl>
+
+      {% if stories %}
+      <div class="mt-6 border-t border-gray-100 dark:border-gray-700 pt-5">
+        <h2 class="pt-section-title">Related KPN stories</h2>
+        <ul class="space-y-2">
+          {% for story in stories %}
+          <li><a href="{% url 'campaigns:article_detail' story.slug %}" class="text-kpn-blue hover:underline font-medium">{{ story.title }}</a>
+          {% if story.story_id %}<span class="text-xs font-mono text-gray-500">({{ story.story_id }})</span>{% endif %}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="mt-8 border-t border-gray-100 dark:border-gray-700 pt-6">
+        <h2 class="pt-section-title">What has happened since</h2>
+        {% if updates %}
+        <ol class="relative border-l-2 border-gray-200 dark:border-gray-700 ml-2 space-y-6">
+          {% for update in updates %}
+          <li class="pl-5 relative">
+            <span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-kpn-green border-2 border-white dark:border-gray-800"></span>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ update.update_date|date:"F j, Y" }}{% if update.status_after %} &bull; Status: <strong>{{ update.get_status_after_display }}</strong>{% endif %}</p>
+            <h3 class="text-base font-bold text-gray-900 dark:text-white mt-0.5">{{ update.title }}</h3>
+            {% if update.body %}<div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mt-1">{{ update.body|linebreaks }}</div>{% endif %}
+            {% if update.evidence_url %}
+            <p class="mt-2 text-sm"><a href="{{ update.evidence_url }}" target="_blank" rel="noopener noreferrer" class="text-kpn-blue hover:underline">Evidence: {{ update.evidence_title|default:"View evidence" }}</a></p>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ol>
+        {% else %}
+        <p class="text-sm text-gray-500">No updates recorded yet.</p>
+        {% endif %}
+      </div>
+    </article>
+  </div>
+</div>
+{% endblock %}

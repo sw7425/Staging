@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 from leadership.models import Zone, LGA, Ward, RoleDefinition
 
 class User(AbstractUser):
@@ -67,12 +68,8 @@ class User(AbstractUser):
     
     class Meta:
         ordering = ['-created_at']
-        constraints = [
-            models.UniqueConstraint(fields=['role_definition'], condition=models.Q(status='VERIFIED', role='STATE', role_definition__isnull=False), name='unique_verified_state_seat'),
-            models.UniqueConstraint(fields=['role_definition', 'zone'], condition=models.Q(status='VERIFIED', role='ZONAL', role_definition__isnull=False), name='unique_verified_zonal_seat'),
-            models.UniqueConstraint(fields=['role_definition', 'lga'], condition=models.Q(status='VERIFIED', role='LGA', role_definition__isnull=False), name='unique_verified_lga_seat'),
-            models.UniqueConstraint(fields=['role_definition', 'ward'], condition=models.Q(status='VERIFIED', role='WARD', role_definition__isnull=False), name='unique_verified_ward_seat'),
-        ]
+        # Migration-owned write guards preserve existing duplicate occupants
+        # while enforcing vacancy for new/reassigned verified memberships.
         indexes = [
             models.Index(fields=['status', 'role'], name='user_status_role_idx'),
             models.Index(fields=['status', 'zone'], name='user_status_zone_idx'),
@@ -80,6 +77,23 @@ class User(AbstractUser):
             models.Index(fields=['status', 'ward'], name='user_status_ward_idx'),
         ]
     
+    def clean(self):
+        super().clean()
+        if self.status != 'VERIFIED' or not self.role_definition_id or self.role not in {'STATE','ZONAL','LGA','WARD'}:
+            return
+        key = {'ZONAL':'zone_id','LGA':'lga_id','WARD':'ward_id'}.get(self.role)
+        if key and getattr(self,key) is None:
+            return  # Existing location validation/preflight handles missing scope.
+        columns = ['status','role','role_definition_id'] + ([key] if key else [])
+        old = type(self).objects.filter(pk=self.pk).values(*columns).first() if self.pk else None
+        if old and old['status']=='VERIFIED' and old['role']==self.role and old['role_definition_id']==self.role_definition_id and (not key or old[key]==getattr(self,key)):
+            return  # Grandfather the unchanged assignment, not new occupants.
+        scope = {'status':'VERIFIED','role':self.role,'role_definition_id':self.role_definition_id}
+        if key: scope[key] = getattr(self,key)
+        if type(self).objects.filter(**scope).exclude(pk=self.pk).exists():
+            from django.core.exceptions import ValidationError
+            raise ValidationError('This leadership seat is already occupied.')
+
     def __str__(self):
         return f"{self.get_full_name()} ({self.get_role_display()})"
     
@@ -527,3 +541,71 @@ class Announcement(models.Model):
         elif self.scope == 'WARD' and self.target_ward:
             return self.target_ward.name
         return 'Unknown'
+
+
+class AnnouncementRead(models.Model):
+    """Part B (app screen 81): one user's read receipt for one
+    announcement. Minimal, additive read tracking for announcements
+    only — the core Notification model is untouched. A row exists
+    only once the user has marked the announcement read."""
+    announcement = models.ForeignKey(
+        Announcement, on_delete=models.CASCADE, related_name='read_receipts')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='announcement_reads')
+    read_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-read_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['announcement', 'user'],
+                name='announcement_read_unique_user'),
+        ]
+
+    def __str__(self):
+        return f'{self.user} read {self.announcement}'
+
+
+class IdTagGeneration(models.Model):
+    """One row per successful ID tag generation. Used to enforce the
+    limit of one generated ID tag per account per calendar month
+    (Africa/Lagos). Rows are only created on the success path of the
+    generator, never for refused attempts."""
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='id_tag_generations')
+    generated_at = models.DateTimeField(default=timezone.now, db_index=True)
+
+    class Meta:
+        ordering = ['-generated_at']
+
+    def __str__(self):
+        return f'ID tag for {self.user} at {self.generated_at}'
+
+
+class LegalOpinionDraft(models.Model):
+    """Part B (app screen 118): a legal adviser's unfinished legal
+    opinion on one disciplinary case, saved server-side so it can be
+    resumed. One draft per (author, case). Submitting the final
+    opinion through the existing legal-opinion endpoint deletes the
+    author's draft for that case (it is superseded by the final
+    opinion recorded on the DisciplinaryAction itself)."""
+    action = models.ForeignKey(
+        DisciplinaryAction, on_delete=models.CASCADE,
+        related_name='legal_opinion_drafts')
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='legal_opinion_drafts')
+    legal_opinion = models.TextField(blank=True)
+    legal_approved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['action', 'author'],
+                name='legal_opinion_draft_unique_author_case'),
+        ]
+
+    def __str__(self):
+        return f'Draft legal opinion by {self.author} on {self.action}'

@@ -54,7 +54,7 @@ def swap_members(first_id,second_id):
     list(RoleDefinition.objects.select_for_update().filter(pk__in=definitions).order_by("pk"))
     first,second=members
     first_values={k:getattr(first,k) for k in FIELDS};second_values={k:getattr(second,k) for k in FIELDS}
-    # Conditional unique indexes are immediate. Vacate both seats only inside this
+    # Verified-seat guards are immediate. Vacate both seats only inside this
     # atomic transaction, then restore each original status with its swapped seat.
     User.objects.filter(pk__in=[first.pk,second.pk],status="VERIFIED").update(status="UNDER_REVIEW")
     for member,values in ((first,second_values),(second,first_values)):

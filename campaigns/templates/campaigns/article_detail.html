@@ -18,7 +18,8 @@
     <!-- Article Header -->
     <header class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
         <!-- Breadcrumb -->
-        <nav class="mb-6">
+        {% include 'includes/breadcrumbs.html' %}
+        <nav class="mb-6 -mt-2">
             <a href="{% url 'campaigns:newsroom' %}" class="text-sm text-gray-500 dark:text-gray-400 hover:text-kpn-green transition">
                 <i class="fas fa-arrow-left mr-1"></i> Back to Newsroom
             </a>
@@ -52,17 +53,11 @@
         <!-- Author + meta bar -->
         <div class="flex flex-wrap items-center gap-4 border-t border-b border-gray-100 dark:border-gray-800 py-4 mt-6">
             <div class="flex items-center gap-3">
-                {% if article.author.photo %}
-                    <img src="{{ article.author.photo.url }}" alt="{{ article.author.get_full_name }}"
-                         class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-600">
-                {% else %}
-                    <div class="w-10 h-10 rounded-full bg-kpn-green flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                        {{ article.author.first_name|first|default:article.author.username|first|upper }}
-                    </div>
-                {% endif %}
+                <div class="w-10 h-10 rounded-full bg-kpn-green flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                    KPN
+                </div>
                 <div>
-                    <p class="text-sm font-semibold text-gray-900 dark:text-white leading-tight">{{ article.author.get_full_name }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ article.get_reporter_credit_display }}</p>
+                    <p class="text-sm font-semibold text-gray-900 dark:text-white leading-tight">{{ article.get_reporter_credit_display }}</p>
                 </div>
             </div>
 
@@ -110,6 +105,19 @@
                 {{ article.content|linebreaks }}
             {% endif %}
         </div>
+
+        {% if article.source_url %}
+        <!-- Original source (v2.4.4): a real link button, not dead text -->
+        <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+            <a href="{{ article.source_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 bg-kpn-green text-white font-semibold rounded-lg shadow hover:bg-green-700 transition">
+                <i class="fas fa-external-link-alt"></i>
+                <span>Source: {{ article.source_name|default:"Original report" }}</span>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- KPN Media Phase 1: Story File panel (renders only when story data exists) -->
+        {% include 'campaigns/_story_panel.html' %}
     </div>
 
 </article>

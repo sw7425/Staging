@@ -47,8 +47,11 @@ class NewsroomListView(generics.ListAPIView):
 
 class NewsroomDetailView(generics.RetrieveAPIView):
     queryset = Campaign.objects.filter(status='PUBLISHED')
-    serializer_class = CampaignSerializer
     lookup_field = 'slug'
+
+    def get_serializer_class(self):
+        from .public_content import CampaignDetailSerializer
+        return CampaignDetailSerializer
     permission_classes = [permissions.AllowAny]
     @extend_schema(auth=[])
     def get(self, request, *args, **kwargs):
@@ -75,7 +78,11 @@ class OpportunityListView(generics.ListAPIView):
 
     def get_queryset(self):
         requested_status = self.request.query_params.get('status')
-        queryset = Opportunity.objects.all() if requested_status == 'all' else Opportunity.objects.filter(status__in=['OPEN','CLOSING_SOON'])
+        # Priority 1: VERIFICATION_PENDING listings are public (with a
+        # badge, link withheld by the serializer), so they list here
+        # alongside OPEN/CLOSING_SOON. CLOSED stays archive-only
+        # unless explicitly requested, exactly as before.
+        queryset = Opportunity.objects.all() if requested_status == 'all' else Opportunity.objects.filter(status__in=['OPEN','CLOSING_SOON','VERIFICATION_PENDING'])
         if requested_status and requested_status != 'all': queryset = queryset.filter(status=requested_status)
         category = self.request.query_params.get('category')
         if category: queryset = queryset.filter(category=category)
@@ -162,6 +169,43 @@ class ImpactMetricsView(APIView):
             "zones_total": Zone.objects.count(),
             "lgas_total": LGA.objects.count(),
             "wards_total": Ward.objects.count(),
+        }
+        # Priority 5 (additive): the public Impact & Metrics page's
+        # six metric groups — every metric with its definition,
+        # reporting period, last-updated date and source — and the
+        # per-LGA coverage data behind the public coverage map. The
+        # legacy flat fields above are unchanged.
+        from core.metrics import metric_groups
+        from core.coverage import coverage_rows, coverage_totals
+        groups = []
+        for group in metric_groups():
+            metrics = []
+            for metric in group['metrics']:
+                row = dict(metric)
+                if row.get('last_updated') is not None:
+                    row['last_updated'] = row['last_updated'].isoformat()
+                metrics.append(row)
+            groups.append({'name': group['name'], 'metrics': metrics})
+        data['groups'] = groups
+        rows = coverage_rows()
+        data['coverage'] = {
+            'totals': coverage_totals(rows),
+            'lgas': [{
+                'lga': row['lga'].pk,
+                'lga_name': row['lga'].name,
+                'zone_name': row['lga'].zone.name if row['lga'].zone_id else None,
+                'slug': row['news_slug'],
+                'members': row['members'],
+                'wards_active': row['wards_active'],
+                'wards_total': row['wards_total'],
+                'stories': row['stories'],
+                'initiatives': row['initiatives'],
+                'promises': row['promises'],
+                'projects': row['projects'],
+                'strength': row['strength'],
+                'covered': row['covered'],
+                'fill': row['fill'],
+            } for row in rows],
         }
         return Response(data)
 
@@ -402,6 +446,14 @@ class MemberListView(generics.ListAPIView):
                 except (ValueError,TypeError):return queryset.none()
         tier=self.request.query_params.get('tier')
         if tier:queryset=queryset.filter(role=tier)
+        # Round 2 (screen 114): wing filter, server-side. The web's
+        # women's wing is its female members (gender='F', as the staff
+        # dashboards count them); 'men' is the symmetric filter.
+        wing=self.request.query_params.get('wing')
+        if wing:
+            wing_gender={'women':'F','men':'M'}.get(wing.lower())
+            if wing_gender is None:return queryset.none()
+            queryset=queryset.filter(gender=wing_gender)
         query=self.request.query_params.get('search','').strip()
         if query:
             from django.db.models import Q
@@ -426,7 +478,12 @@ class MemberDecisionView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsVerifiedMember, capability_permission('REVIEW_APPLICANTS')]
     def post(self,request,pk):
         from staff.services.member_admin import decide_application,MemberDecisionError
-        try: member=decide_application(request.user,pk,serializers.ChoiceField(choices=['approve','reject']).run_validation(request.data.get('decision')),serializers.CharField(allow_blank=True,max_length=2000).run_validation(request.data.get('reason','')))
+        # Round 2 (screen 70): an optional decision note is accepted
+        # as `note` (the app's field name) as well as the long-standing
+        # `reason`; both go to the same decide_application service the
+        # web member decision flow uses, which stores it as the
+        # applicant's archive_reason on rejection.
+        try: member=decide_application(request.user,pk,serializers.ChoiceField(choices=['approve','reject']).run_validation(request.data.get('decision')),serializers.CharField(allow_blank=True,max_length=2000).run_validation(request.data.get('note',request.data.get('reason',''))))
         except User.DoesNotExist: raise NotFound('Applicant not found.')
         except MemberDecisionError as exc:
             from rest_framework.exceptions import PermissionDenied,ValidationError
@@ -449,7 +506,20 @@ class ReportListCreateView(generics.ListCreateAPIView):
         from rest_framework.exceptions import PermissionDenied,ValidationError
         if 'SUBMIT_REPORTS' not in capabilities_for(request.user): raise PermissionDenied('Your role cannot submit hierarchical reports.')
         serializer=ReportCreateSerializer(data=request.data); serializer.is_valid(raise_exception=True)
-        try: report=create_report(request.user,**serializer.validated_data)
+        data=dict(serializer.validated_data)
+        # Round 2 (screen 73): report_type / submitted_to are derived
+        # by the workflow from the submitter. When the client sends
+        # them they must match the derived values exactly.
+        sent_type=data.pop('report_type',None); sent_recipient=data.pop('submitted_to',None)
+        if sent_type is not None or sent_recipient is not None:
+            from core.services.reports import recipient_for,report_type_for
+            if sent_type is not None and sent_type!=report_type_for(request.user):
+                raise ValidationError({'report_type':['This report type does not match your reporting line.']})
+            if sent_recipient is not None:
+                derived=recipient_for(request.user)
+                if derived is None or sent_recipient!=derived.pk:
+                    raise ValidationError({'submitted_to':['This recipient does not match your reporting line.']})
+        try: report=create_report(request.user,**data)
         except ReportWorkflowError as exc:
             if exc.code=='permission_denied': raise PermissionDenied(exc.message,code=exc.code)
             raise ValidationError({exc.field or 'non_field_errors':[exc.message]})
@@ -466,11 +536,12 @@ class ReportRecipientView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsVerifiedMember, capability_permission('SUBMIT_REPORTS')]
     def get(self,request):
         from core.services.reports import recipient_for,report_type_for,ReportWorkflowError
+        from leadership.access import role_title
         from rest_framework.exceptions import ValidationError
         try: recipient=recipient_for(request.user)
         except ReportWorkflowError as exc: raise ValidationError({exc.field or 'non_field_errors':[exc.message]})
         if not recipient: raise ValidationError({'submitted_to':['No verified recipient is set up for your area yet. Contact your lead.']})
-        return Response({'report_type':report_type_for(request.user),'recipient':{'id':recipient.id,'name':recipient.get_full_name(),'role_title':recipient.role_definition.title if recipient.role_definition else None}})
+        return Response({'report_type':report_type_for(request.user),'recipient':{'id':recipient.id,'name':recipient.get_full_name(),'role_title':role_title(recipient)}})
 
 class ReportReviewView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsVerifiedMember, any_capability_permission('REVIEW_REPORTS','OVERSIGHT_REPORTS')]
@@ -526,7 +597,14 @@ class MyArticleDetailView(generics.RetrieveUpdateDestroyAPIView):
         if instance.status in {'PUBLISHED','PENDING'}:
             from rest_framework.exceptions import ValidationError
             raise ValidationError({'non_field_errors':['Cannot delete a published or pending article.']})
-        instance.delete()
+        # KPN Media Phase 1: articles with a Story ID or story records
+        # are part of the permanent archive — archive, never delete.
+        from campaigns.services import ProtectedArticleError, delete_campaign
+        try:
+            delete_campaign(instance)
+        except ProtectedArticleError as exc:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError({'non_field_errors':[str(exc)]})
 
 class ArticleSubmitView(APIView):
     permission_classes=[permissions.IsAuthenticated,IsVerifiedMember,capability_permission('WRITE_ARTICLES')]
@@ -552,12 +630,48 @@ class ArticleDecisionView(APIView):
         article=Campaign.objects.filter(pk=pk,status='PENDING').first()
         if not article: raise NotFound('Pending article not found.')
         action=serializers.CharField(max_length=32).run_validation(request.data.get('action')); note=serializers.CharField(allow_blank=True,max_length=20000).run_validation(request.data.get('note','')).strip()
-        if action=='publish': article.status='PUBLISHED'; article.approved_by=request.user; article.published_at=timezone.now(); article.rejection_note=''
+        if action=='publish':
+            # Single publishing service (Phase 1): allocates the permanent
+            # Story ID in the same transaction; failure leaves the article
+            # PENDING and recoverable.
+            from campaigns.services import publish_campaign
+            from story_intelligence.services import ConsentRequiredError
+            try: publish_campaign(article,request.user)
+            except ConsentRequiredError as exc: raise ValidationError({'non_field_errors':[str(exc)]})
+            except Exception: raise ValidationError({'non_field_errors':['Publishing failed and nothing was changed. The article is still pending — please try again.']})
+            return Response(CampaignSerializer(article,context={'request':request}).data)
         elif action in {'return','reject'}:
             if not note: raise ValidationError({'note':['An editor note is required.']})
             article.status='REJECTED'; article.rejection_note=note
         else: raise ValidationError({'action':['Use publish or return.']})
         article.save(); return Response(CampaignSerializer(article,context={'request':request}).data)
+
+class ArticleArchiveView(APIView):
+    """Archive a published article (KPN Media Phase 1): it leaves public
+    view but its record, Story ID and story history are preserved."""
+    permission_classes=[permissions.IsAuthenticated,IsVerifiedMember,capability_permission('WRITE_ARTICLES')]
+    def post(self,request,pk):
+        from rest_framework.exceptions import ValidationError
+        from leadership.capabilities import capabilities_for
+        article=Campaign.objects.filter(pk=pk).first()
+        if not article or (article.author_id!=request.user.pk and 'ALL_ARTICLES' not in capabilities_for(request.user)): raise NotFound('Article not found.')
+        if article.status!='PUBLISHED': raise ValidationError({'non_field_errors':['Only published articles can be archived.']})
+        from campaigns.services import archive_campaign
+        archive_campaign(article,actor=request.user)
+        return Response(CampaignSerializer(article,context={'request':request}).data)
+
+class ArticleRestoreView(APIView):
+    """Restore an archived article to PUBLISHED with its Story ID intact."""
+    permission_classes=[permissions.IsAuthenticated,IsVerifiedMember,capability_permission('WRITE_ARTICLES')]
+    def post(self,request,pk):
+        from rest_framework.exceptions import ValidationError
+        from leadership.capabilities import capabilities_for
+        article=Campaign.objects.filter(pk=pk).first()
+        if not article or (article.author_id!=request.user.pk and 'ALL_ARTICLES' not in capabilities_for(request.user)): raise NotFound('Article not found.')
+        if article.status!='ARCHIVED': raise ValidationError({'non_field_errors':['Only archived articles can be restored.']})
+        from campaigns.services import restore_campaign
+        restore_campaign(article,actor=request.user)
+        return Response(CampaignSerializer(article,context={'request':request}).data)
 
 class MyMediaListCreateView(generics.ListCreateAPIView):
     serializer_class=MediaItemSerializer

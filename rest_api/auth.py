@@ -65,7 +65,7 @@ class PasswordResetRequestView(APIView):
   user=User.objects.filter(email__iexact=email).first()
   if user:
    token=default_token_generator.make_token(user); uid=urlsafe_base64_encode(force_bytes(user.pk))
-   site_url=getattr(settings,"SITE_URL","").rstrip('/') or "https://kpn.com.ng"
+   site_url=getattr(settings,"SITE_URL","").rstrip('/') or "https://kpn-staging.onrender.com"
    link=f"{site_url}/account/reset-password/{uid}/{token}/"
    name=user.get_full_name() or user.username
    try:
